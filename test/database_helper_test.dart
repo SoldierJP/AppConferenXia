@@ -58,4 +58,45 @@ void main() {
       expect(events.isEmpty, isTrue);
     });
   });
+
+  group('Event Track Association Tests', () {
+    test('Create Event, Event Track, Associate and Retrieve', () async {
+      // Create an Event
+      final event = {
+        'name': 'Tech Conference',
+        'location': 'New York',
+        'date': '2025-05-15',
+        'max_participants': 200,
+        'description': 'A conference for tech enthusiasts',
+        'current_participants': 50,
+        'is_finished': 0,
+      };
+      int eventId = await DatabaseHelper.insertEvent(event);
+      expect(eventId, isNonZero);
+
+      // Create an Event Track
+      final eventTrack = {
+        'name': 'AI and Machine Learning',
+      };
+      int trackId = await DatabaseHelper.insertEventTrack(eventTrack);
+      expect(trackId, isNonZero);
+
+      // Associate Event with Event Track
+      final association = {
+        'event_id': eventId,
+        'track_id': trackId,
+      };
+      int associationId = await DatabaseHelper.associateEventToEventTrack(
+        association['event_id']!,
+        association['track_id']!,
+      );
+      expect(associationId, isNonZero);
+
+      // Retrieve Events associated with the Event Track
+      List<Map<String, dynamic>> eventsInTrack = await DatabaseHelper.getEventsByEventTrack(trackId);
+      expect(eventsInTrack.length, equals(1));
+      expect(eventsInTrack.first['name'], equals(event['name']));
+      expect(eventsInTrack.first['location'], equals(event['location']));
+    });
+  });
 }

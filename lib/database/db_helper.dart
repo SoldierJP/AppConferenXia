@@ -137,10 +137,7 @@ class DatabaseHelper {
           whereArgs: [id],
         );
       }
-      static Future<int> insertEventEventTrack(Map<String, dynamic> eventEventTrack) async {
-        final db = await instance.db;
-        return await db.insert('Event_EventTrack', eventEventTrack);
-      }
+      
       static Future<List<Map<String, dynamic>>> getEventsByEventTrack(int eventTrackId) async {
         final db = await instance.db;
         return await db.rawQuery('''
@@ -174,6 +171,18 @@ class DatabaseHelper {
         await db.execute("DELETE FROM sqlite_sequence WHERE name='EventReview';");
         await db.execute("DELETE FROM sqlite_sequence WHERE name='EventTrack';");
 
+    }
+
+    static Future<int> associateEventToEventTrack(int eventId, int eventTrackId) async {
+      final db = await instance.db;
+      return await db.insert(
+        'Event_EventTrack',
+        {
+          'event_id': eventId,
+          'eventtrack_id': eventTrackId,
+        },
+        conflictAlgorithm: ConflictAlgorithm.ignore, // Prevent duplicate associations
+      );
     }
 
   }
