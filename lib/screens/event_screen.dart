@@ -14,11 +14,12 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final event = widget.event;
+    final primaryColor = Color.fromRGBO(20, 33, 61, 1);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(event.title),
-        backgroundColor: Colors.purple,
+        backgroundColor: primaryColor,
         foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
@@ -118,11 +119,10 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: primaryColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    backgroundColor:
-                        event.availableSpots > 0 ? Colors.purple : Colors.grey,
                   ),
                   onPressed:
                       event.availableSpots > 0
@@ -135,7 +135,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                                     content: Text(
                                       'Reserva confirmada para ${event.title}',
                                     ),
-                                    backgroundColor: Colors.purple,
+                                    backgroundColor: primaryColor,
                                   ),
                                 );
                               }
