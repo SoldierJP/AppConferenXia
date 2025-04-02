@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:primerproyectomovil/widgets/scrollable.dart';
-import '../widgets/navbar.dart';
 import '../widgets/searchbar.dart' as custom;
 
 class MisEventosScreen extends StatefulWidget {
