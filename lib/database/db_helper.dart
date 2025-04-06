@@ -1,3 +1,4 @@
+import 'package:primerproyectomovil/models/event.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' show join;
 
@@ -55,6 +56,13 @@ class DatabaseHelper {
             PRIMARY KEY (event_id, eventtrack_id),
             FOREIGN KEY (event_id) REFERENCES Event (id) ON DELETE CASCADE,
             FOREIGN KEY (eventtrack_id) REFERENCES EventTrack (id) ON DELETE CASCADE
+          )
+        ''');
+        await db.execute('''
+          CREATE TABLE SubscribedEvent (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            event_id INTEGER NOT NULL,
+            FOREIGN KEY (event_id) REFERENCES Event (id) ON DELETE CASCADE
           )
         ''');
       }
@@ -184,5 +192,14 @@ class DatabaseHelper {
         conflictAlgorithm: ConflictAlgorithm.ignore, // Prevent duplicate associations
       );
     }
-
+    static Future<int> insertSubscribedEvent(Map<String, dynamic> event) async {
+      final db = await instance.db;
+      return await db.insert('SubscribedEvent', event);
+    }
+    static Future<List<Event>> getSubscribedEvents() async {
+      final db = await instance.db;
+      final rawData = await db.query('SELECT * FROM SubscribedEvent'); 
+      return rawData.map((map) => Event.fromMap(map)).toList();
+    }
   }
+  

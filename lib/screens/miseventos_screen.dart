@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:primerproyectomovil/widgets/scrollable.dart';
 import '../widgets/navbar.dart';
 import '../widgets/searchbar.dart' as custom;
+import 'package:primerproyectomovil/database/db_helper.dart';
+import 'package:primerproyectomovil/models/event.dart';
 
 class MisEventosScreen extends StatefulWidget {
   const MisEventosScreen({super.key});
@@ -32,7 +34,19 @@ class MisEventosScreenState extends State<MisEventosScreen> {
                 hintText: 'Buscar eventos',
                 onChanged: (value) {},
               ),
-              ScrollableEventList(itemCount: 10,),
+              FutureBuilder<List<Event>>(
+      future: DatabaseHelper.getSubscribedEvents(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          final events = snapshot.data ?? [];
+          return ScrollableEventList(events: events);
+        }
+      },
+    ),
             ],
           ),
         ),
