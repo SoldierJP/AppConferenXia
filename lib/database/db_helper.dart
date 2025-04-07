@@ -198,4 +198,16 @@ class DatabaseHelper {
           ConflictAlgorithm.ignore, // Prevent duplicate associations
     );
   }
+
+  static Future<List<Event>> getSubscribedEvents() async {
+    final db = await instance.db;
+    final rawData = await db.query('SubscribedEvent');
+    return rawData.map((map) => Event.fromMap(map)).toList();
+  }
+
+  static Future<List<Event>> getAllEvents() async {
+    final db = await instance.db;
+    final rawData = await db.query('Event');
+    return rawData.map((map) => Event.fromMap(map)).toList();
+  }
 }
