@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:primerproyectomovil/screens/miseventos_screen.dart';
 import 'package:primerproyectomovil/screens/splash_screen.dart';
+import 'data_seed.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  //seedDatabase();   descomentar para agregar datos, ir al data_Seed.dart para cambiarlos datos insertados.
   runApp(const MyApp());
 }
 
