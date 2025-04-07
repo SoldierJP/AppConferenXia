@@ -4,8 +4,6 @@ import 'package:path/path.dart' as path;
 import 'package:primerproyectomovil/database/db_helper.dart'; // Adjust path as needed
 
 void main() {
-  
-
   setUpAll(() async {
     // Initialize FFI for SQLite
     sqfliteFfiInit();
@@ -75,17 +73,12 @@ void main() {
       expect(eventId, isNonZero);
 
       // Create an Event Track
-      final eventTrack = {
-        'name': 'AI and Machine Learning',
-      };
+      final eventTrack = {'name': 'AI and Machine Learning'};
       int trackId = await DatabaseHelper.insertEventTrack(eventTrack);
       expect(trackId, isNonZero);
 
       // Associate Event with Event Track
-      final association = {
-        'event_id': eventId,
-        'track_id': trackId,
-      };
+      final association = {'event_id': eventId, 'track_id': trackId};
       int associationId = await DatabaseHelper.associateEventToEventTrack(
         association['event_id']!,
         association['track_id']!,
@@ -93,7 +86,8 @@ void main() {
       expect(associationId, isNonZero);
 
       // Retrieve Events associated with the Event Track
-      List<Map<String, dynamic>> eventsInTrack = await DatabaseHelper.getEventsByEventTrack(trackId);
+      List<Map<String, dynamic>> eventsInTrack =
+          await DatabaseHelper.getEventsByEventTrack(trackId);
       expect(eventsInTrack.length, equals(1));
       expect(eventsInTrack.first['name'], equals(event['name']));
       expect(eventsInTrack.first['location'], equals(event['location']));
