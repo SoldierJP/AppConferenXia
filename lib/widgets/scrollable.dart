@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
-
+import 'package:primerproyectomovil/models/event.dart';
 class ScrollableEventList extends StatelessWidget {
-  final int itemCount;
+  final List<Event> events;
 
-  const ScrollableEventList({super.key, this.itemCount = 10});
+  const ScrollableEventList({super.key, required this.events});
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: ListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: itemCount,
+        itemCount: events.length,
         itemBuilder: (context, index) {
+          final event = events[index];
           return Container(
             margin: const EdgeInsets.only(bottom: 16),
             decoration: BoxDecoration(
@@ -43,7 +44,7 @@ class ScrollableEventList extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(12),
                   child: Text(
-                    'Evento ${index + 1}',
+                    event.name,
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,

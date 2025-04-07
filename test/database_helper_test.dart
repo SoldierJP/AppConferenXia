@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:path/path.dart' as path;
 import 'package:primerproyectomovil/database/db_helper.dart'; // Adjust path as needed
+import 'package:primerproyectomovil/models/event.dart';
 
 void main() {
   setUpAll(() async {
@@ -91,6 +92,36 @@ void main() {
       expect(eventsInTrack.length, equals(1));
       expect(eventsInTrack.first['name'], equals(event['name']));
       expect(eventsInTrack.first['location'], equals(event['location']));
+    });
+  });
+
+  group('Subscribed Events Tests', () {
+    test('Create Event, Subscribe, and Retrieve Subscribed Events', () async {
+      // Create an Event
+      final event = {
+        'name': 'Tech Workshop',
+        'location': 'Boston',
+        'date': '2025-06-20',
+        'max_participants': 50,
+        'description': 'A workshop for tech enthusiasts',
+        'current_participants': 10,
+        'is_finished': 0,
+      };
+      int eventId = await DatabaseHelper.insertEvent(event);
+      expect(eventId, isNonZero);
+
+      // Subscribe to the Event
+      final subscription = {
+        'event_id': eventId,
+      };
+      int subscriptionId = await DatabaseHelper.insertSubscribedEvent(subscription);
+      expect(subscriptionId, isNonZero);
+
+      // Retrieve Subscribed Events
+      List<Event> subscribedEvents = await DatabaseHelper.getSubscribedEvents();
+      expect(subscribedEvents.length, greaterThan(0));
+      expect(subscribedEvents.first.name, equals(event['name']));
+      expect(subscribedEvents.first.location, equals(event['location']));
     });
   });
 }

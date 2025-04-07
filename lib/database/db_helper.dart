@@ -1,3 +1,4 @@
+import 'package:primerproyectomovil/models/event.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' show join;
 
@@ -55,15 +56,13 @@ class DatabaseHelper {
             FOREIGN KEY (eventtrack_id) REFERENCES EventTrack (id) ON DELETE CASCADE
           )
         ''');
-  }
-
-  static Future<void> printDatabaseContents() async {
-    final db = await instance.db;
-    final events = await db.query('Event');
-    print('--- Event ---');
-    for (var event in events) {
-      print(event);
-    }
+    await db.execute('''
+          CREATE TABLE SubscribedEvent (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            event_id INTEGER NOT NULL,
+            FOREIGN KEY (event_id) REFERENCES Event (id) ON DELETE CASCADE
+          )
+        ''');
   }
 
   static Future<int> insertEvent(Map<String, dynamic> event) async {
