@@ -144,11 +144,13 @@ class DatabaseHelper {
     return await db.delete('EventTrack', where: 'id = ?', whereArgs: [id]);
   }
 
-  static Future<List<Map<String, dynamic>>> getEventsByEventTrack(
-    int eventTrackId,
-  ) async {
+  static Future<List<Event>> getEventsByEventTrack(int? eventTrackId) async {
     final db = await instance.db;
-    return await db.rawQuery(
+    if (eventTrackId == null) {
+      final rawData = await db.query("Event");
+      return rawData.map((map) => Event.fromMap(map)).toList();
+    }
+    final rawData = await db.rawQuery(
       '''
           SELECT Event.*
           FROM Event
@@ -157,6 +159,7 @@ class DatabaseHelper {
           ''',
       [eventTrackId],
     );
+    return rawData.map((map) => Event.fromMap(map)).toList();
   }
 
   static Future<int> deleteEventEventTrack(

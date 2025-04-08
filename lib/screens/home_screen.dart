@@ -15,10 +15,17 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int selectedIndex = 0;
+  int? selectedTrackId;
 
   void onItemTapped(int index) {
     setState(() {
       selectedIndex = index;
+    });
+  }
+
+  void onTrackTapped(int? index) {
+    setState(() {
+      selectedTrackId = index;
     });
   }
 
@@ -41,10 +48,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 onChanged: (value) {},
               ),
               const SizedBox(height: 8),
-              const EventTrackBar(), // ← Añadido aquí
+              EventTrackBar(onTrackTapped: onTrackTapped), // ← Añadido aquí
               const SizedBox(height: 8),
               FutureBuilder<List<Event>>(
-                future: DatabaseHelper.getAllEvents(),
+                future: DatabaseHelper.getEventsByEventTrack(selectedTrackId),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const CircularProgressIndicator();

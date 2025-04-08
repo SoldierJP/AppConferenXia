@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:primerproyectomovil/database/db_helper.dart';
 
 class EventTrackBar extends StatefulWidget {
-  const EventTrackBar({super.key});
+  final void Function(int?) onTrackTapped;
+  const EventTrackBar({super.key, required this.onTrackTapped});
 
   @override
   State<EventTrackBar> createState() => _EventTrackBarState();
@@ -26,6 +27,7 @@ class _EventTrackBarState extends State<EventTrackBar> {
 
   void onTrackTap(Map<String, dynamic> track) {
     // Aquí podrías hacer algo como filtrar eventos por track
+    widget.onTrackTapped(track['id'] as int?);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Track seleccionado: ${track['name']}')),
     );
@@ -44,7 +46,7 @@ class _EventTrackBarState extends State<EventTrackBar> {
           itemBuilder: (context, index) {
             final track = tracks[index];
             return ElevatedButton(
-              onPressed: () => onTrackTap(track),
+              onPressed: () => widget.onTrackTapped(track['id']),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.deepPurple.shade100,
                 foregroundColor: Colors.deepPurple.shade800,
