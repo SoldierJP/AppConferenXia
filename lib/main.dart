@@ -6,7 +6,7 @@ import 'data_delete.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  //deleteAllData();
+  //deleteAllData(); // borrar todos los datos de la base de datos
   //seedDatabase();   //descomentar para agregar datos, ir al data_Seed.dart para cambiarlos datos insertados.
   runApp(const MyApp());
 }
