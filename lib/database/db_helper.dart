@@ -168,11 +168,12 @@ class DatabaseHelper {
       static Future<void> deleteAllData() async {
         final db = await instance.db;
 
-  // Delete all rows from each table
-        await db.delete('Event');
-        await db.delete('EventReview');
-        await db.delete('EventTrack');
-        await db.delete('Event_EventTrack');
+    // Delete all rows from each table
+    await db.delete('Event');
+    await db.delete('EventReview');
+    await db.delete('EventTrack');
+    await db.delete('Event_EventTrack');
+    await db.delete('SubscribedEvent');
 
   // Reset AUTOINCREMENT counters for all tables
         await db.execute("DELETE FROM sqlite_sequence WHERE name='Event';");
@@ -181,30 +182,41 @@ class DatabaseHelper {
 
     }
 
-    static Future<int> associateEventToEventTrack(int eventId, int eventTrackId) async {
-      final db = await instance.db;
-      return await db.insert(
-        'Event_EventTrack',
-        {
-          'event_id': eventId,
-          'eventtrack_id': eventTrackId,
-        },
-        conflictAlgorithm: ConflictAlgorithm.ignore, // Prevent duplicate associations
-      );
-    }
-    static Future<int> insertSubscribedEvent(Map<String, dynamic> event) async {
-      final db = await instance.db;
-      return await db.insert('SubscribedEvent', event);
-    }
-    static Future<List<Event>> getSubscribedEvents() async {
-      final db = await instance.db;
-      final rawData = await db.query('SubscribedEvent'); 
-      return rawData.map((map) => Event.fromMap(map)).toList();
-    }
-    static Future<List<Event>> getAllEvents() async {
-      final db = await instance.db;
-      final rawData = await db.query('Event');
-      return rawData.map((map) => Event.fromMap(map)).toList();
-    }
+  static Future<int> associateEventToEventTrack(
+    int eventId,
+    int eventTrackId,
+  ) async {
+    final db = await instance.db;
+    return await db.insert(
+      'Event_EventTrack',
+      {'event_id': eventId, 'eventtrack_id': eventTrackId},
+      conflictAlgorithm:
+          ConflictAlgorithm.ignore, // Prevent duplicate associations
+    );
   }
-  
+   static Future<int> insertSubscribedEvent(int eventId) async {
+  final db = await instance.db;
+  return await db.insert('SubscribedEvent', {
+    'event_id': eventId,
+  });
+}
+
+
+  static Future<List<Event>> getSubscribedEvents() async {
+  final db = await instance.db;
+  final rawData = await db.rawQuery('''
+    SELECT Event.*
+    FROM Event
+    INNER JOIN SubscribedEvent ON SubscribedEvent.event_id = Event.id
+  ''');
+
+  return rawData.map((map) => Event.fromMap(map)).toList();
+}
+
+
+  static Future<List<Event>> getAllEvents() async {
+    final db = await instance.db;
+    final rawData = await db.query('Event');
+    return rawData.map((map) => Event.fromMap(map)).toList();
+  }
+}
