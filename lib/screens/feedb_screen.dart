@@ -59,7 +59,7 @@ class _EventFeedbackScreenState extends State<EventFeedbackScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Colors.blue.shade700;
+    final primaryColor = const Color(0xFF14213D);
 
     return Scaffold(
       appBar: AppBar(
