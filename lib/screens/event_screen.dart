@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:primerproyectomovil/database/db_helper.dart';
 import 'package:primerproyectomovil/models/event.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:intl/intl.dart';
 
 import 'package:primerproyectomovil/screens/feedb_screen.dart';
 
@@ -15,6 +16,25 @@ class EventDetailScreen extends StatefulWidget {
 }
 
 class _EventDetailScreenState extends State<EventDetailScreen> {
+  bool isPastEvent = false;
+  @override
+  void initState() {
+    super.initState();
+    final eventTime = DateTime.parse(widget.event.date);
+    final now = DateTime.now();
+    isPastEvent = eventTime.isBefore(now);
+    if(!isPastEvent){
+      final delay = eventTime.difference(now);
+      Future.delayed(delay, () {
+        if(mounted){
+          setState(() {
+            isPastEvent = true;
+          });
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final event = widget.event;
@@ -97,7 +117,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                     children: [
                       const Icon(Icons.calendar_today, size: 16),
                       const SizedBox(width: 8),
-                      Text(event.date),
+                      Text(DateFormat('yyyy-MM-dd').format(DateTime.parse(event.date))),
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -105,7 +125,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                     children: [
                       const Icon(Icons.access_time, size: 16),
                       const SizedBox(width: 8),
-                      Text(event.date),
+                      Text(DateFormat('HH:mm').format(DateTime.parse(event.date))),
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -161,7 +181,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
+                  isPastEvent ?
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton(
@@ -191,7 +212,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                         ),
                       ),
                     ),
-                  ),
+                  ) : const SizedBox.shrink(),
                 ],
               ),
             ),

@@ -1,10 +1,11 @@
 import 'package:primerproyectomovil/database/db_helper.dart';
+import 'package:intl/intl.dart';
 
 Future<void> seedDatabase() async {
   await DatabaseHelper.insertEvent({
     'name': 'Tech Summit 2025',
     'location': 'New York',
-    'date': '2025-06-10',
+    'date': DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now().add(Duration(minutes: 5))),
     'max_participants': 200,
     'description': 'Annual technology conference.',
   });
@@ -12,7 +13,7 @@ Future<void> seedDatabase() async {
   await DatabaseHelper.insertEvent({
     'name': 'Music Fest',
     'location': 'Los Angeles',
-    'date': '2025-07-20',
+    'date': DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now().add(Duration(minutes: 5))),
     'max_participants': 500,
     'description': 'A festival for music lovers.',
   });
