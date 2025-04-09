@@ -12,15 +12,13 @@ class DatabaseHelper {
     _database ??= await initDb();
     return _database!;
   }
+
   Future<Database> initDb() async {
     String databasesPath = await getDatabasesPath();
     String path = join(databasesPath, 'events.db');
-    return await openDatabase(
-      path,
-      version: 1,
-      onCreate: _createDb,
-    );
+    return await openDatabase(path, version: 1, onCreate: _createDb);
   }
+
   Future<void> _createDb(Database db, int version) async {
     await db.execute('''
           CREATE TABLE Event (
@@ -34,7 +32,7 @@ class DatabaseHelper {
             is_finished BOOLEAN DEFAULT 0
           )
         ''');
-        await db.execute('''
+    await db.execute('''
           CREATE TABLE EventReview (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             event_id INTEGER NOT NULL,
@@ -43,13 +41,13 @@ class DatabaseHelper {
             FOREIGN KEY (event_id) REFERENCES Event (id) ON DELETE CASCADE
           )
         ''');
-        await db.execute('''
+    await db.execute('''
           CREATE TABLE EventTrack (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL
           )
         ''');
-        await db.execute('''
+    await db.execute('''
           CREATE TABLE Event_EventTrack (
             event_id INTEGER NOT NULL,
             eventtrack_id INTEGER NOT NULL,
@@ -58,95 +56,95 @@ class DatabaseHelper {
             FOREIGN KEY (eventtrack_id) REFERENCES EventTrack (id) ON DELETE CASCADE
           )
         ''');
-        await db.execute('''
+    await db.execute('''
           CREATE TABLE SubscribedEvent (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             event_id INTEGER NOT NULL,
             FOREIGN KEY (event_id) REFERENCES Event (id) ON DELETE CASCADE
           )
         ''');
-      }
-      static Future<int> insertEvent(Map<String, dynamic> event) async {
-        final db = await instance.db;
-        return await db.insert('Event', event);
-      }
-      static Future<List<Map<String, dynamic>>> getEvents() async {
-        final db = await instance.db;
-        return await db.query('Event');
-      }
-      static Future<int> updateEvent(Map<String, dynamic> event) async {
-        final db = await instance.db;
-        return await db.update(
-          'Event',
-          event,
-          where: 'id = ?',
-          whereArgs: [event['id']],
-        );
-      }
-      static Future<int> deleteEvent(int id) async {
-        final db = await instance.db;
-        return await db.delete(
-          'Event',
-          where: 'id = ?',
-          whereArgs: [id],
-        );
-      }
-      static Future<int> insertEventReview(Map<String, dynamic> review) async {
-        final db = await instance.db;
-        return await db.insert('EventReview', review);
-      }
-      static Future<List<Map<String, dynamic>>> getEventReviews(int eventId) async {
-        final db = await instance.db;
-        return await db.query(
-          'EventReview',
-          where: 'event_id = ?',
-          whereArgs: [eventId],
-        );
-      }
-      static Future<int> updateEventReview(Map<String, dynamic> review) async {
-        final db = await instance.db;
-        return await db.update(
-          'EventReview',
-          review,
-          where: 'id = ?',
-          whereArgs: [review['id']],
-        );
-      }
-      static Future<int> deleteEventReview(int id) async {
-        final db = await instance.db;
-        return await db.delete(
-          'EventReview',
-          where: 'id = ?',
-          whereArgs: [id],
-        );
-      }
-      static Future<int> insertEventTrack(Map<String, dynamic> track) async {
-        final db = await instance.db;
-        return await db.insert('EventTrack', track);
-      }
-      static Future<List<Map<String, dynamic>>> getEventTracks() async {
-        final db = await instance.db;
-        return await db.query('EventTrack');
-      }
-      static Future<int> updateEventTrack(Map<String, dynamic> track) async {
-        final db = await instance.db;
-        return await db.update(
-          'EventTrack',
-          track,
-          where: 'id = ?',
-          whereArgs: [track['id']],
-        );
-      }
-      static Future<int> deleteEventTrack(int id) async {
-        final db = await instance.db;
-        return await db.delete(
-          'EventTrack',
-          where: 'id = ?',
-          whereArgs: [id],
-        );
-      }
-      
-      static Future<List<Event>> getEventsByEventTrack(int? eventTrackId) async {
+  }
+
+  static Future<int> insertEvent(Map<String, dynamic> event) async {
+    final db = await instance.db;
+    return await db.insert('Event', event);
+  }
+
+  static Future<List<Map<String, dynamic>>> getEvents() async {
+    final db = await instance.db;
+    return await db.query('Event');
+  }
+
+  static Future<int> updateEvent(Map<String, dynamic> event) async {
+    final db = await instance.db;
+    return await db.update(
+      'Event',
+      event,
+      where: 'id = ?',
+      whereArgs: [event['id']],
+    );
+  }
+
+  static Future<int> deleteEvent(int id) async {
+    final db = await instance.db;
+    return await db.delete('Event', where: 'id = ?', whereArgs: [id]);
+  }
+
+  static Future<int> insertEventReview(Map<String, dynamic> review) async {
+    final db = await instance.db;
+    return await db.insert('EventReview', review);
+  }
+
+  static Future<List<Map<String, dynamic>>> getEventReviews(int eventId) async {
+    final db = await instance.db;
+    return await db.query(
+      'EventReview',
+      where: 'event_id = ?',
+      whereArgs: [eventId],
+    );
+  }
+
+  static Future<int> updateEventReview(Map<String, dynamic> review) async {
+    final db = await instance.db;
+    return await db.update(
+      'EventReview',
+      review,
+      where: 'id = ?',
+      whereArgs: [review['id']],
+    );
+  }
+
+  static Future<int> deleteEventReview(int id) async {
+    final db = await instance.db;
+    return await db.delete('EventReview', where: 'id = ?', whereArgs: [id]);
+  }
+
+  static Future<int> insertEventTrack(Map<String, dynamic> track) async {
+    final db = await instance.db;
+    return await db.insert('EventTrack', track);
+  }
+
+  static Future<List<Map<String, dynamic>>> getEventTracks() async {
+    final db = await instance.db;
+    return await db.query('EventTrack');
+  }
+
+  static Future<int> updateEventTrack(Map<String, dynamic> track) async {
+    final db = await instance.db;
+    return await db.update(
+      'EventTrack',
+      track,
+      where: 'id = ?',
+      whereArgs: [track['id']],
+    );
+  }
+
+  static Future<int> deleteEventTrack(int id) async {
+    final db = await instance.db;
+    return await db.delete('EventTrack', where: 'id = ?', whereArgs: [id]);
+  }
+
+  static Future<List<Event>> getEventsByEventTrack(int? eventTrackId) async {
     final db = await instance.db;
     if (eventTrackId == null) {
       final rawData = await db.query("Event");
@@ -163,16 +161,21 @@ class DatabaseHelper {
     );
     return rawData.map((map) => Event.fromMap(map)).toList();
   }
-      static Future<int> deleteEventEventTrack(int eventId, int eventTrackId) async {
-        final db = await instance.db;
-        return await db.delete(
-          'Event_EventTrack',
-          where: 'event_id = ? AND eventtrack_id = ?',
-          whereArgs: [eventId, eventTrackId],
-        );
-      }
-      static Future<void> deleteAllData() async {
-        final db = await instance.db;
+
+  static Future<int> deleteEventEventTrack(
+    int eventId,
+    int eventTrackId,
+  ) async {
+    final db = await instance.db;
+    return await db.delete(
+      'Event_EventTrack',
+      where: 'event_id = ? AND eventtrack_id = ?',
+      whereArgs: [eventId, eventTrackId],
+    );
+  }
+
+  static Future<void> deleteAllData() async {
+    final db = await instance.db;
 
     // Delete all rows from each table
     await db.delete('Event');
@@ -181,12 +184,11 @@ class DatabaseHelper {
     await db.delete('Event_EventTrack');
     await db.delete('SubscribedEvent');
 
-  // Reset AUTOINCREMENT counters for all tables
-        await db.execute("DELETE FROM sqlite_sequence WHERE name='Event';");
-        await db.execute("DELETE FROM sqlite_sequence WHERE name='EventReview';");
-        await db.execute("DELETE FROM sqlite_sequence WHERE name='EventTrack';");
-
-    }
+    // Reset AUTOINCREMENT counters for all tables
+    await db.execute("DELETE FROM sqlite_sequence WHERE name='Event';");
+    await db.execute("DELETE FROM sqlite_sequence WHERE name='EventReview';");
+    await db.execute("DELETE FROM sqlite_sequence WHERE name='EventTrack';");
+  }
 
   static Future<int> associateEventToEventTrack(
     int eventId,
@@ -200,25 +202,22 @@ class DatabaseHelper {
           ConflictAlgorithm.ignore, // Prevent duplicate associations
     );
   }
-   static Future<int> insertSubscribedEvent(int eventId) async {
-  final db = await instance.db;
-  return await db.insert('SubscribedEvent', {
-    'event_id': eventId,
-  });
-}
 
+  static Future<int> insertSubscribedEvent(int eventId) async {
+    final db = await instance.db;
+    return await db.insert('SubscribedEvent', {'event_id': eventId});
+  }
 
   static Future<List<Event>> getSubscribedEvents() async {
-  final db = await instance.db;
-  final rawData = await db.rawQuery('''
+    final db = await instance.db;
+    final rawData = await db.rawQuery('''
     SELECT Event.*
     FROM Event
     INNER JOIN SubscribedEvent ON SubscribedEvent.event_id = Event.id
   ''');
 
-  return rawData.map((map) => Event.fromMap(map)).toList();
-}
-
+    return rawData.map((map) => Event.fromMap(map)).toList();
+  }
 
   static Future<List<Event>> getAllEvents() async {
     final db = await instance.db;
@@ -233,5 +232,20 @@ class DatabaseHelper {
       total += review['stars'];
     }
     return total / reviews.length;
+  }
+
+  static Future<int> deleteSubscribedEvent(int id) async {
+    final db = await instance.db;
+    return await db.delete('SubscribedEvent', where: 'id = ?', whereArgs: [id]);
+  }
+
+  static Future<bool> isEventSubscribed(int eventId) async {
+    final db = await instance.db;
+    final result = await db.query(
+      'SubscribedEvent',
+      where: 'event_id = ?',
+      whereArgs: [eventId],
+    );
+    return result.isNotEmpty;
   }
 }

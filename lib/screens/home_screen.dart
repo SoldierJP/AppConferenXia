@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:primerproyectomovil/widgets/scrollable.dart';
-import '../widgets/navbar.dart';
 import '../widgets/searchbar.dart' as custom;
 import 'package:primerproyectomovil/database/db_helper.dart';
 import 'package:primerproyectomovil/models/event.dart';
@@ -13,7 +12,6 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-
 class _HomeScreenState extends State<HomeScreen> {
   int selectedIndex = 0;
   int? selectedTrackId;
@@ -23,6 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
       selectedIndex = index;
     });
   }
+
   void onTrackTapped(int? index) {
     setState(() {
       selectedTrackId = index;
@@ -31,11 +30,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-   return MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Padding(
-          padding: EdgeInsets.fromLTRB(0, MediaQuery.of(context).padding.top, 0, 0),
+          padding: EdgeInsets.fromLTRB(
+            0,
+            MediaQuery.of(context).padding.top,
+            0,
+            0,
+          ),
           child: Column(
             children: [
               custom.SearchBar(
@@ -46,22 +50,21 @@ class _HomeScreenState extends State<HomeScreen> {
               EventTrackBar(onTrackTapped: onTrackTapped), // ← Añadido aquí
               const SizedBox(height: 8),
               FutureBuilder<List<Event>>(
-      future: DatabaseHelper.getEventsByEventTrack(selectedTrackId),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          final events = snapshot.data ?? [];
-          return ScrollableEventList(events: events);
-        }
-      },
-    ),
+                future: DatabaseHelper.getEventsByEventTrack(selectedTrackId),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    final events = snapshot.data ?? [];
+                    return ScrollableEventList(events: events);
+                  }
+                },
+              ),
             ],
           ),
         ),
-
       ),
     );
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:primerproyectomovil/models/event.dart';
 import 'package:primerproyectomovil/screens/event_screen.dart';
-import 'package:primerproyectomovil/screens/miseventos_screen.dart';
+
 
 class ScrollableEventList extends StatelessWidget {
   final List<Event> events;

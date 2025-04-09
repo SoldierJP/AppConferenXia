@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:primerproyectomovil/screens/miseventos_screen.dart';
 import 'package:primerproyectomovil/screens/splash_screen.dart';
 import 'data_seed.dart';
 import 'data_delete.dart';

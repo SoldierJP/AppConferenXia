@@ -16,7 +16,7 @@ class EventDetailScreen extends StatefulWidget {
 
 class _EventDetailScreenState extends State<EventDetailScreen> {
   bool isPastEvent = false;
-
+  bool isSubscribed = false;
   @override
   void initState() {
     super.initState();
@@ -29,10 +29,19 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         if (mounted) {
           setState(() {
             isPastEvent = true;
+            isSubscribed = false;
           });
         }
       });
     }
+    checkIfSubscribed();
+  }
+
+  Future<void> checkIfSubscribed() async {
+    final result = await DatabaseHelper.isEventSubscribed(widget.event.id!);
+    setState(() {
+      isSubscribed = result;
+    });
   }
 
   @override
@@ -80,17 +89,19 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: availableSpots > 5
-                          ? Colors.green[100]
-                          : Colors.orange[100],
+                      color:
+                          availableSpots > 5
+                              ? Colors.green[100]
+                              : Colors.orange[100],
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
                       '$availableSpots cupos disponibles de ${event.maxParticipants}',
                       style: TextStyle(
-                        color: availableSpots > 5
-                            ? Colors.green[800]
-                            : Colors.orange[800],
+                        color:
+                            availableSpots > 5
+                                ? Colors.green[800]
+                                : Colors.orange[800],
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -116,7 +127,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       const Icon(Icons.calendar_today, size: 16),
                       const SizedBox(width: 8),
                       Text(
-                        DateFormat('yyyy-MM-dd').format(DateTime.parse(event.date)),
+                        DateFormat(
+                          'yyyy-MM-dd',
+                        ).format(DateTime.parse(event.date)),
                       ),
                     ],
                   ),
@@ -156,37 +169,78 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      onPressed: availableSpots > 0
-                          ? () async {
-                              final updatedEvent = {
-                                'id': event.id,
-                                'name': event.name,
-                                'location': event.location,
-                                'date': event.date,
-                                'max_participants': event.maxParticipants,
-                                'description': event.description,
-                                'current_participants': event.currentParticipants + 1,
-                                'is_finished': event.isFinished ? 1 : 0,
-                              };
-                              await DatabaseHelper.updateEvent(updatedEvent);
-                              setState(() {
-                                widget.event.currentParticipants += 1;
-                                DatabaseHelper.insertSubscribedEvent(
-                                  event.id!,
-                                );
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      'Reserva confirmada para ${event.name}',
+                      onPressed:
+                          (availableSpots > 0 || isSubscribed)
+                              ? () async {
+                                if (isSubscribed) {
+                                  await DatabaseHelper.deleteSubscribedEvent(
+                                    event.id!,
+                                  );
+                                  final updatedEvent = {
+                                    'id': event.id,
+                                    'name': event.name,
+                                    'location': event.location,
+                                    'date': event.date,
+                                    'max_participants': event.maxParticipants,
+                                    'description': event.description,
+                                    'current_participants':
+                                        event.currentParticipants - 1,
+                                    'is_finished': event.isFinished ? 1 : 0,
+                                  };
+                                  await DatabaseHelper.updateEvent(
+                                    updatedEvent,
+                                  );
+                                  setState(() {
+                                    event.currentParticipants--;
+                                    isSubscribed = false;
+                                  });
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Registro cancelado para ${event.name}',
+                                      ),
+                                      backgroundColor: Colors.red,
                                     ),
-                                    backgroundColor: primaryColor,
-                                  ),
-                                );
-                              });
-                            }
-                          : null,
+                                  );
+                                } else {
+                                  await DatabaseHelper.insertSubscribedEvent(
+                                    event.id!,
+                                  );
+                                  final updatedEvent = {
+                                    'id': event.id,
+                                    'name': event.name,
+                                    'location': event.location,
+                                    'date': event.date,
+                                    'max_participants': event.maxParticipants,
+                                    'description': event.description,
+                                    'current_participants':
+                                        event.currentParticipants + 1,
+                                    'is_finished': event.isFinished ? 1 : 0,
+                                  };
+                                  await DatabaseHelper.updateEvent(
+                                    updatedEvent,
+                                  );
+                                  setState(() {
+                                    event.currentParticipants++;
+                                    isSubscribed = true;
+                                  });
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Reserva confirmada para ${event.name}',
+                                      ),
+                                      backgroundColor: primaryColor,
+                                    ),
+                                  );
+                                }
+                              }
+                              : null,
                       child: Text(
-                        availableSpots > 0 ? 'RESERVAR ENTRADA' : 'AGOTADO',
+                        availableSpots == 0 && !isSubscribed
+                            ? 'AGOTADO'
+                            : isSubscribed
+                            ? 'CANCELAR REGISTRO'
+                            : 'RESERVAR ENTRADA',
                         style: const TextStyle(
                           fontSize: 16,
                           color: Colors.white,
@@ -194,37 +248,40 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  if (event.isFinished)
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          side: BorderSide(color: primaryColor),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  EventFeedbackScreen(event: widget.event),
+                  SizedBox(height: 12),
+                  isPastEvent
+                      ? SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            side: BorderSide(color: primaryColor),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                          );
-                        },
-                        child: Text(
-                          'Calificar evento',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: primaryColor,
-                            fontWeight: FontWeight.bold,
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => EventFeedbackScreen(
+                                      event: widget.event,
+                                    ),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'Calificar evento',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: primaryColor,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                    ),
+                      )
+                      : const SizedBox.shrink(),
                 ],
               ),
             ),

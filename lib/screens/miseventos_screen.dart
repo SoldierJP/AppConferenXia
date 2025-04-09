@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:primerproyectomovil/widgets/scrollable.dart';
-import '../widgets/navbar.dart';
 import '../widgets/searchbar.dart' as custom;
 import 'package:primerproyectomovil/database/db_helper.dart';
 import 'package:primerproyectomovil/models/event.dart';
