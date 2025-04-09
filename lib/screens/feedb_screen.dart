@@ -16,18 +16,21 @@ class _EventFeedbackScreenState extends State<EventFeedbackScreen> {
   final TextEditingController _opinionController = TextEditingController();
   List<Map<String, dynamic>> reviews = [];
   bool showBestRated = true;
+  double averageRating = 0.0;
 
   @override
   void initState() {
     super.initState();
     _loadReviews();
+    averageRating = DatabaseHelper.calculateAverageRating(reviews);
   }
 
   Future<void> _loadReviews() async {
     final data = await DatabaseHelper.getEventReviews(widget.event.id!);
     setState(() {
-      reviews = data;
+      reviews = List<Map<String, dynamic>>.from(data);
       _sortReviews();
+      averageRating = DatabaseHelper.calculateAverageRating(reviews);
     });
   }
 
@@ -74,9 +77,9 @@ class _EventFeedbackScreenState extends State<EventFeedbackScreen> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            const Text(
-              '4.7 de 5',
-              style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+            Text(
+              '$averageRating de 5',
+              style: const TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
             ),
             const Divider(),
             const Text(

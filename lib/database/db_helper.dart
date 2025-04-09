@@ -225,4 +225,13 @@ class DatabaseHelper {
     final rawData = await db.query('Event');
     return rawData.map((map) => Event.fromMap(map)).toList();
   }
+
+  static double calculateAverageRating(List<Map<String, dynamic>> reviews) {
+    if (reviews.isEmpty) return 0.0;
+    double total = 0.0;
+    for (var review in reviews) {
+      total += review['stars'];
+    }
+    return total / reviews.length;
+  }
 }
