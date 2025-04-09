@@ -48,8 +48,8 @@ class _EventTrackBarState extends State<EventTrackBar> {
             return ElevatedButton(
               onPressed: () => widget.onTrackTapped(track['id']),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple.shade100,
-                foregroundColor: const Color(0xFF14213D),
+                backgroundColor: const Color(0xFF14213D),
+                foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 10,
