@@ -5,7 +5,7 @@ class Event {
   final String date;
   final int maxParticipants;
   final String? description;
-  final int currentParticipants;
+  int currentParticipants;
   final bool isFinished;
   final String? image;
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:primerproyectomovil/database/db_helper.dart';
 import 'package:primerproyectomovil/models/event.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:intl/intl.dart';
 
 import 'package:primerproyectomovil/screens/feedb_screen.dart';
@@ -17,16 +16,17 @@ class EventDetailScreen extends StatefulWidget {
 
 class _EventDetailScreenState extends State<EventDetailScreen> {
   bool isPastEvent = false;
+
   @override
   void initState() {
     super.initState();
     final eventTime = DateTime.parse(widget.event.date);
     final now = DateTime.now();
     isPastEvent = eventTime.isBefore(now);
-    if(!isPastEvent){
+    if (!isPastEvent) {
       final delay = eventTime.difference(now);
       Future.delayed(delay, () {
-        if(mounted){
+        if (mounted) {
           setState(() {
             isPastEvent = true;
           });
@@ -80,19 +80,17 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color:
-                          availableSpots > 5
-                              ? Colors.green[100]
-                              : Colors.orange[100],
+                      color: availableSpots > 5
+                          ? Colors.green[100]
+                          : Colors.orange[100],
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
                       '$availableSpots cupos disponibles de ${event.maxParticipants}',
                       style: TextStyle(
-                        color:
-                            availableSpots > 5
-                                ? Colors.green[800]
-                                : Colors.orange[800],
+                        color: availableSpots > 5
+                            ? Colors.green[800]
+                            : Colors.orange[800],
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -117,7 +115,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                     children: [
                       const Icon(Icons.calendar_today, size: 16),
                       const SizedBox(width: 8),
-                      Text(DateFormat('yyyy-MM-dd').format(DateTime.parse(event.date))),
+                      Text(
+                        DateFormat('yyyy-MM-dd').format(DateTime.parse(event.date)),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -125,7 +125,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                     children: [
                       const Icon(Icons.access_time, size: 16),
                       const SizedBox(width: 8),
-                      Text(DateFormat('HH:mm').format(DateTime.parse(event.date))),
+                      Text(
+                        DateFormat('HH:mm').format(DateTime.parse(event.date)),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -154,24 +156,35 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      onPressed:
-                          availableSpots > 0
-                              ? () {
-                                setState(() {
-                                  DatabaseHelper.insertSubscribedEvent(
-                                    event.id!,
-                                  );
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        'Reserva confirmada para ${event.name}',
-                                      ),
-                                      backgroundColor: primaryColor,
+                      onPressed: availableSpots > 0
+                          ? () async {
+                              final updatedEvent = {
+                                'id': event.id,
+                                'name': event.name,
+                                'location': event.location,
+                                'date': event.date,
+                                'max_participants': event.maxParticipants,
+                                'description': event.description,
+                                'current_participants': event.currentParticipants + 1,
+                                'is_finished': event.isFinished ? 1 : 0,
+                              };
+                              await DatabaseHelper.updateEvent(updatedEvent);
+                              setState(() {
+                                widget.event.currentParticipants += 1;
+                                DatabaseHelper.insertSubscribedEvent(
+                                  event.id!,
+                                );
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Reserva confirmada para ${event.name}',
                                     ),
-                                  );
-                                });
-                              }
-                              : null,
+                                    backgroundColor: primaryColor,
+                                  ),
+                                );
+                              });
+                            }
+                          : null,
                       child: Text(
                         availableSpots > 0 ? 'RESERVAR ENTRADA' : 'AGOTADO',
                         style: const TextStyle(
@@ -181,38 +194,37 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 12),
-                  isPastEvent ?
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        side: BorderSide(color: primaryColor),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) =>
-                                    EventFeedbackScreen(event: widget.event),
+                  const SizedBox(height: 12),
+                  if (event.isFinished)
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          side: BorderSide(color: primaryColor),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                        );
-                      },
-                      child: Text(
-                        'Calificar evento',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: primaryColor,
-                          fontWeight: FontWeight.bold,
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  EventFeedbackScreen(event: widget.event),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Calificar evento',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: primaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
-                  ) : const SizedBox.shrink(),
                 ],
               ),
             ),
