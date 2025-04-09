@@ -3,6 +3,8 @@ import 'package:primerproyectomovil/database/db_helper.dart';
 import 'package:primerproyectomovil/models/event.dart';
 import 'package:sqflite/sqflite.dart';
 
+import 'package:primerproyectomovil/screens/feedb_screen.dart';
+
 class EventDetailScreen extends StatefulWidget {
   final Event event;
 
@@ -81,7 +83,10 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 8),
-                  Text(event.description ?? 'Descripción no disponible', style: const TextStyle(fontSize: 16)),
+                  Text(
+                    event.description ?? 'Descripción no disponible',
+                    style: const TextStyle(fontSize: 16),
+                  ),
                   const SizedBox(height: 24),
                   const Text(
                     'Detalles:',
@@ -117,39 +122,77 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    backgroundColor: primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        backgroundColor: primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed:
+                          availableSpots > 0
+                              ? () {
+                                setState(() {
+                                  DatabaseHelper.insertSubscribedEvent(
+                                    event.id!,
+                                  );
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Reserva confirmada para ${event.name}',
+                                      ),
+                                      backgroundColor: primaryColor,
+                                    ),
+                                  );
+                                });
+                              }
+                              : null,
+                      child: Text(
+                        availableSpots > 0 ? 'RESERVAR ENTRADA' : 'AGOTADO',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ),
-                  onPressed:
-                      availableSpots > 0
-                          ? () {
-                            setState(() {
-                              DatabaseHelper.insertSubscribedEvent(event.id!);
-                              
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      'Reserva confirmada para ${event.name}',
-                                    ),
-                                    backgroundColor: primaryColor,
-                                  ),
-                                );
-                              
-                            });
-                          }
-                          : null,
-                  child: Text(
-                    availableSpots > 0 ? 'RESERVAR ENTRADA' : 'AGOTADO',
-                    style: const TextStyle(fontSize: 16, color: Colors.white),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        side: BorderSide(color: primaryColor),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) =>
+                                    EventFeedbackScreen(event: widget.event),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        'Calificar evento',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: primaryColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           ],
