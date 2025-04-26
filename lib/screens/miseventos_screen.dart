@@ -34,7 +34,7 @@ class MisEventosScreenState extends State<MisEventosScreen> {
                 onChanged: (value) {},
               ),
               FutureBuilder<List<Event>>(
-      future: DatabaseHelper.getSubscribedEvents(),
+      future: loadSubscribedEvents(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();

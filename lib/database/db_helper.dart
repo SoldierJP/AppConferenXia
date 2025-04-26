@@ -1,4 +1,5 @@
 import 'package:primerproyectomovil/models/event.dart';
+import 'package:primerproyectomovil/models/event_review.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' show join;
 
@@ -6,6 +7,12 @@ typedef TracksLoader = Future<List<Map<String, dynamic>>> Function();
 
 /// Expose a top-level `getEventTracks` variable, defaulting to your static call
 TracksLoader getEventTracks = DatabaseHelper.getEventTracks;
+
+typedef SubscribedEventsLoader = Future<List<Event>> Function();
+SubscribedEventsLoader loadSubscribedEvents = DatabaseHelper.getSubscribedEvents;
+
+typedef EventReviewsLoader = Future<List<Map<String, dynamic>>> Function(int eventId);
+EventReviewsLoader getEventReviews = DatabaseHelper.getEventReviews;
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._instance();
