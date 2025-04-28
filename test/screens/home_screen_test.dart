@@ -44,23 +44,6 @@ void main() {
       expect(find.textContaining('Error:'), findsNothing);
     });
 
-    // testWidgets('Displays events in FutureBuilder success state', (WidgetTester tester) async {
-    //   // Mock data
-    //   final mockEvents = [
-    //     Event(id: 1, name: 'Event 1', trackId: 1),
-    //     Event(id: 2, name: 'Event 2', trackId: 1),
-    //   ];
-
-    //   // Arrange
-    //   await tester.pumpWidget(MaterialApp(
-    //     home: HomeScreen(),
-    //   ));
-
-    //   // Simulate success state
-    //   await tester.pump();
-    //   expect(find.byType(ScrollableEventList), findsOneWidget);
-    // });
-
     testWidgets('Tapping EventTrackBar updates selectedTrackId', (WidgetTester tester) async {
       // Arrange
       await tester.pumpWidget(const MaterialApp(home: HomeScreen()));
