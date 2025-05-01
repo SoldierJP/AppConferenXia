@@ -41,19 +41,27 @@ class _HomeScreenState extends State<HomeScreen> {
             0,
           ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
+                child: Text(
+                  'Descubrir eventos',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+              ),
               custom.SearchBar(
                 hintText: 'Buscar eventos',
                 onChanged: (value) {},
               ),
               const SizedBox(height: 8),
-              EventTrackBar(onTrackTapped: onTrackTapped), // ← Añadido aquí
+              EventTrackBar(onTrackTapped: onTrackTapped),
               const SizedBox(height: 8),
               FutureBuilder<List<Event>>(
                 future: DatabaseHelper.getEventsByEventTrack(selectedTrackId),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
+                    return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   } else {
