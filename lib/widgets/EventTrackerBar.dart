@@ -2,8 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:primerproyectomovil/database/db_helper.dart';
 
 class EventTrackBar extends StatefulWidget {
+  /// NEW: allow injecting any async loader
+  final Future<List<Map<String, dynamic>>> Function() loadTracks;
   final void Function(int?) onTrackTapped;
-  const EventTrackBar({super.key, required this.onTrackTapped});
+
+  const EventTrackBar({
+    super.key,
+    required this.onTrackTapped,
+    this.loadTracks = DatabaseHelper.getEventTracks, 
+  });
 
   @override
   State<EventTrackBar> createState() => _EventTrackBarState();
@@ -15,22 +22,12 @@ class _EventTrackBarState extends State<EventTrackBar> {
   @override
   void initState() {
     super.initState();
-    loadTracks();
+    _load();
   }
 
-  void loadTracks() async {
-    final result = await DatabaseHelper.getEventTracks();
-    setState(() {
-      tracks = result;
-    });
-  }
-
-  void onTrackTap(Map<String, dynamic> track) {
-    // Aquí podrías hacer algo como filtrar eventos por track
-    widget.onTrackTapped(track['id'] as int?);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Track seleccionado: ${track['name']}')),
-    );
+  Future<void> _load() async {
+    final result = await widget.loadTracks();
+    setState(() => tracks = result);
   }
 
   @override
