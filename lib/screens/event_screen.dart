@@ -82,7 +82,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
               Hero(
                 tag: 'event-${event.id}',
                 child: Image.network(
-                  event.image ?? 'https://picsum.photos/400/200?random=${event.id}',
+                  event.image ??
+                      'https://picsum.photos/400/200?random=${event.id}',
                   height: 250,
                   width: double.infinity,
                   fit: BoxFit.cover,
@@ -94,15 +95,24 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
-                        color: availableSpots > 5 ? Colors.green[100] : Colors.orange[100],
+                        color:
+                            availableSpots > 5
+                                ? Colors.green[100]
+                                : Colors.orange[100],
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
                         '$availableSpots cupos disponibles de ${event.maxParticipants}',
                         style: TextStyle(
-                          color: availableSpots > 5 ? Colors.green[800] : Colors.orange[800],
+                          color:
+                              availableSpots > 5
+                                  ? Colors.green[800]
+                                  : Colors.orange[800],
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -110,7 +120,10 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                     const SizedBox(height: 16),
                     const Text(
                       'Descripción del evento:',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Text(
@@ -120,14 +133,21 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                     const SizedBox(height: 24),
                     const Text(
                       'Detalles:',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Row(
                       children: [
                         const Icon(Icons.calendar_today, size: 16),
                         const SizedBox(width: 8),
-                        Text(DateFormat('yyyy-MM-dd').format(DateTime.parse(event.date))),
+                        Text(
+                          DateFormat(
+                            'yyyy-MM-dd',
+                          ).format(DateTime.parse(event.date)),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 8),
@@ -135,7 +155,11 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       children: [
                         const Icon(Icons.access_time, size: 16),
                         const SizedBox(width: 8),
-                        Text(DateFormat('HH:mm').format(DateTime.parse(event.date))),
+                        Text(
+                          DateFormat(
+                            'HH:mm',
+                          ).format(DateTime.parse(event.date)),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 8),
@@ -157,62 +181,87 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        onPressed: (availableSpots > 0 || isSubscribed) ? () async {
-                          if (isSubscribed) {
-                            await DatabaseHelper.deleteSubscribedEvent(event.id!);
-                            final updatedEvent = {
-                              'id': event.id,
-                              'name': event.name,
-                              'location': event.location,
-                              'date': event.date,
-                              'max_participants': event.maxParticipants,
-                              'description': event.description,
-                              'current_participants': event.currentParticipants - 1,
-                              'is_finished': event.isFinished ? 1 : 0,
-                            };
-                            await DatabaseHelper.updateEvent(updatedEvent);
-                            setState(() {
-                              event.currentParticipants--;
-                              isSubscribed = false;
-                            });
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Te has dado de baja del evento "${event.name}"'),
-                                backgroundColor: primaryColor,
-                              ),
-                            );
-                          } else {
-                            await DatabaseHelper.insertSubscribedEvent(event.id!);
-                            final updatedEvent = {
-                              'id': event.id,
-                              'name': event.name,
-                              'location': event.location,
-                              'date': event.date,
-                              'max_participants': event.maxParticipants,
-                              'description': event.description,
-                              'current_participants': event.currentParticipants + 1,
-                              'is_finished': event.isFinished ? 1 : 0,
-                            };
-                            await DatabaseHelper.updateEvent(updatedEvent);
-                            setState(() {
-                              event.currentParticipants++;
-                              isSubscribed = true;
-                            });
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Reserva confirmada para "${event.name}"'),
-                                backgroundColor: primaryColor,
-                              ),
-                            );
-                          }
-                        } : null,
+                        onPressed:
+                            (availableSpots > 0 || isSubscribed)
+                                ? () async {
+                                  if (isSubscribed) {
+                                    await DatabaseHelper.deleteSubscribedEvent(
+                                      event.id!,
+                                    );
+                                    final updatedEvent = {
+                                      'id': event.id,
+                                      'name': event.name,
+                                      'location': event.location,
+                                      'date': event.date,
+                                      'max_participants': event.maxParticipants,
+                                      'description': event.description,
+                                      'current_participants':
+                                          event.currentParticipants - 1,
+                                      'is_finished': event.isFinished ? 1 : 0,
+                                    };
+                                    await DatabaseHelper.updateEvent(
+                                      updatedEvent,
+                                    );
+                                    setState(() {
+                                      event.currentParticipants--;
+                                      isSubscribed = false;
+                                    });
+
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'Te has dado de baja del evento "${event.name}"',
+                                        ),
+                                        backgroundColor: primaryColor,
+                                      ),
+                                    );
+                                    await Future.delayed(Duration(seconds: 1));
+                                    Navigator.pop(context, 'updated');
+                                  } else {
+                                    await DatabaseHelper.insertSubscribedEvent(
+                                      event.id!,
+                                    );
+                                    final updatedEvent = {
+                                      'id': event.id,
+                                      'name': event.name,
+                                      'location': event.location,
+                                      'date': event.date,
+                                      'max_participants': event.maxParticipants,
+                                      'description': event.description,
+                                      'current_participants':
+                                          event.currentParticipants + 1,
+                                      'is_finished': event.isFinished ? 1 : 0,
+                                    };
+                                    await DatabaseHelper.updateEvent(
+                                      updatedEvent,
+                                    );
+                                    setState(() {
+                                      event.currentParticipants++;
+                                      isSubscribed = true;
+                                    });
+                                    Navigator.pop(context, 'updated');
+
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'Reserva confirmada para "${event.name}"',
+                                        ),
+                                        backgroundColor: primaryColor,
+                                      ),
+                                    );
+                                  }
+                                }
+                                : null,
                         child: Text(
                           availableSpots == 0 && !isSubscribed
                               ? 'AGOTADO'
                               : isSubscribed
-                                  ? 'CANCELAR REGISTRO'
-                                  : 'RESERVAR ENTRADA',
-                          style: const TextStyle(fontSize: 16, color: Colors.white),
+                              ? 'CANCELAR REGISTRO'
+                              : 'RESERVAR ENTRADA',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
@@ -224,8 +273,10 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                           onPressed: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    EventFeedbackScreen(event: widget.event),
+                                builder:
+                                    (context) => EventFeedbackScreen(
+                                      event: widget.event,
+                                    ),
                               ),
                             );
                           },

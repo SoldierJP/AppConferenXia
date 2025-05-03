@@ -9,9 +9,11 @@ typedef TracksLoader = Future<List<Map<String, dynamic>>> Function();
 TracksLoader getEventTracks = DatabaseHelper.getEventTracks;
 
 typedef SubscribedEventsLoader = Future<List<Event>> Function();
-SubscribedEventsLoader loadSubscribedEvents = DatabaseHelper.getSubscribedEvents;
+SubscribedEventsLoader loadSubscribedEvents =
+    DatabaseHelper.getSubscribedEvents;
 
-typedef EventReviewsLoader = Future<List<Map<String, dynamic>>> Function(int eventId);
+typedef EventReviewsLoader =
+    Future<List<Map<String, dynamic>>> Function(int eventId);
 EventReviewsLoader getEventReviews = DatabaseHelper.getEventReviews;
 
 class DatabaseHelper {
@@ -248,7 +250,11 @@ class DatabaseHelper {
 
   static Future<int> deleteSubscribedEvent(int id) async {
     final db = await instance.db;
-    return await db.delete('SubscribedEvent', where: 'id = ?', whereArgs: [id]);
+    return await db.delete(
+      'SubscribedEvent',
+      where: 'event_id  = ?',
+      whereArgs: [id],
+    );
   }
 
   static Future<bool> isEventSubscribed(int eventId) async {

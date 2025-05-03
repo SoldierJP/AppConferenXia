@@ -4,8 +4,9 @@ import 'package:primerproyectomovil/screens/event_screen.dart';
 
 class ScrollableEventList extends StatelessWidget {
   final List<Event> events;
+  final VoidCallback? onRefresh;
 
-  const ScrollableEventList({super.key, required this.events});
+  const ScrollableEventList({super.key, required this.events, this.onRefresh});
 
   @override
   Widget build(BuildContext context) {
@@ -17,12 +18,17 @@ class ScrollableEventList extends StatelessWidget {
           final event = events[index];
 
           return GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(
+            onTap: () async {
+              await Navigator.push(
+                context,
                 MaterialPageRoute(
-                  builder: (_) => EventDetailScreen(event: event),
+                  builder: (context) => EventDetailScreen(event: event),
                 ),
-              );
+              ).then((result) {
+                if (result == 'updated' && onRefresh != null) {
+                  onRefresh!();
+                }
+              });
             },
             child: Material(
               color: Colors.transparent,
