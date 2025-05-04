@@ -6,6 +6,8 @@ class Navbar extends StatelessWidget {
 
   final NavController navController = Get.find<NavController>();
 
+  Navbar({super.key});
+
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(

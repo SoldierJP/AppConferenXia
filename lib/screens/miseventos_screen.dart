@@ -14,42 +14,57 @@ class MisEventosScreen extends StatefulWidget {
 class MisEventosScreenState extends State<MisEventosScreen> {
   int selectedIndex = 1;
 
+  @override
+  void initState() {
+    super.initState();
+    _futureEvents = loadSubscribedEvents();
+  }
+
   void onItemTapped(int index) {
     setState(() {
       selectedIndex = index;
     });
   }
 
+  late Future<List<Event>> _futureEvents;
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: Padding(
-          padding: EdgeInsets.fromLTRB(0, MediaQuery.of(context).padding.top, 0, 0),
-          child: Column(
-            children: [
-              custom.SearchBar(
-                hintText: 'Buscar eventos',
-                onChanged: (value) {},
-              ),
-              FutureBuilder<List<Event>>(
-      future: DatabaseHelper.getSubscribedEvents(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          final events = snapshot.data ?? [];
-          return ScrollableEventList(events: events);
-        }
-      },
-    ),
-            ],
-          ),
+    return Scaffold(
+      body: Padding(
+        padding: EdgeInsets.fromLTRB(
+          0,
+          MediaQuery.of(context).padding.top,
+          0,
+          0,
         ),
-
+        child: Column(
+          children: [
+            custom.SearchBar(hintText: 'Buscar eventos', onChanged: (value) {}),
+            Expanded(
+              child: FutureBuilder<List<Event>>(
+                future: _futureEvents,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else {
+                    final events = snapshot.data ?? [];
+                    return ScrollableEventList(
+                      events: events,
+                      onRefresh: () {
+                        setState(() {
+                          _futureEvents = loadSubscribedEvents();
+                        });
+                      },
+                    );
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

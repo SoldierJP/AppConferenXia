@@ -26,7 +26,7 @@ class _EventFeedbackScreenState extends State<EventFeedbackScreen> {
   }
 
   Future<void> _loadReviews() async {
-    final data = await DatabaseHelper.getEventReviews(widget.event.id!);
+    final data = await getEventReviews(widget.event.id!);
     setState(() {
       reviews = List<Map<String, dynamic>>.from(data);
       _sortReviews();

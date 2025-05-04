@@ -1,6 +1,20 @@
 import 'package:primerproyectomovil/models/event.dart';
+import 'package:primerproyectomovil/models/event_review.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' show join;
+
+typedef TracksLoader = Future<List<Map<String, dynamic>>> Function();
+
+/// Expose a top-level `getEventTracks` variable, defaulting to your static call
+TracksLoader getEventTracks = DatabaseHelper.getEventTracks;
+
+typedef SubscribedEventsLoader = Future<List<Event>> Function();
+SubscribedEventsLoader loadSubscribedEvents =
+    DatabaseHelper.getSubscribedEvents;
+
+typedef EventReviewsLoader =
+    Future<List<Map<String, dynamic>>> Function(int eventId);
+EventReviewsLoader getEventReviews = DatabaseHelper.getEventReviews;
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._instance();
@@ -226,7 +240,9 @@ class DatabaseHelper {
     return rawData.map((map) => Event.fromMap(map)).toList();
   }
 
-  static double calculateAverageRating(List<Map<String, dynamic>> reviews) {
+  static double calculateAverageRating(List<Map<String, dynamic>> reviews) { 
+    // debería ser un servicio o 'use case', 
+    // estar por fuera de lógica de la base de datos
     if (reviews.isEmpty) return 0.0;
     double total = 0.0;
     for (var review in reviews) {
@@ -237,7 +253,11 @@ class DatabaseHelper {
 
   static Future<int> deleteSubscribedEvent(int id) async {
     final db = await instance.db;
-    return await db.delete('SubscribedEvent', where: 'id = ?', whereArgs: [id]);
+    return await db.delete(
+      'SubscribedEvent',
+      where: 'event_id  = ?',
+      whereArgs: [id],
+    );
   }
 
   static Future<bool> isEventSubscribed(int eventId) async {
