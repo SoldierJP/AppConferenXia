@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:primerproyectomovil/widgets/scrollable.dart';
+import 'package:provider/provider.dart';
 import '../widgets/searchbar.dart' as custom;
 import 'package:primerproyectomovil/database/db_helper.dart';
 import 'package:primerproyectomovil/models/event.dart';
 import 'package:primerproyectomovil/widgets/EventTrackerBar.dart';
-
+import '../database/repositories/data_repository.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -30,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final repo = Provider.of<DataRepository>(context, listen: false);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -58,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
               EventTrackBar(onTrackTapped: onTrackTapped),
               const SizedBox(height: 8),
               FutureBuilder<List<Event>>(
-                future: DatabaseHelper.getEventsByEventTrack(selectedTrackId),
+                future: repo.fetchEvents(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());

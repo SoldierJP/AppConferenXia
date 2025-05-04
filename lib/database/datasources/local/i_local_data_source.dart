@@ -6,17 +6,17 @@ import '../../../models/subscribed_event.dart';
 abstract class ILocalDataSource {
   Future<void> insertEvent(Event event);
   Future<List<Event>> getEvents();
-  Future<void> deleteAllEvents();
+  // Future<void> deleteAllEvents();
 
-  Future<void> insertSubscribedEvent(SubscribedEvent event);
-  Future<List<SubscribedEvent>> getSubscribedEvents();
-  Future<void> deleteSubscribedEvent(String eventId);
+  // Future<void> insertSubscribedEvent(SubscribedEvent event);
+  // Future<List<SubscribedEvent>> getSubscribedEvents();
+  // Future<void> deleteSubscribedEvent(String eventId);
 
-  Future<void> insertEventTrack(EventTrack track);
-  Future<List<EventTrack>> getEventTracks(String eventId);
+  // Future<void> insertEventTrack(EventTrack track);
+  // Future<List<EventTrack>> getEventTracks(String eventId);
 
-  Future<void> insertEventReview(EventReview review);
-  Future<List<EventReview>> getEventReviews(String eventId);
+  // Future<void> insertEventReview(EventReview review);
+  // Future<List<EventReview>> getEventReviews(String eventId);
 
   //a implementar
   // Future<List<Event>> getEvents();

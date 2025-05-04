@@ -10,4 +10,9 @@ class LocalDataSource implements ILocalDataSource{
   Future<void> insertEvent(Event event) async {
     await DatabaseHelper.insertEvent(event.toMap());
   }
+  @override
+  Future<List<Event>> getEvents() async {
+    final events = await DatabaseHelper.getEvents();
+    return events.map((event) => Event.fromMap(event)).toList();
+  }
 }

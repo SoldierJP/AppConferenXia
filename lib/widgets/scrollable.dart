@@ -55,9 +55,8 @@ class ScrollableEventList extends StatelessWidget {
                       ),
                       child: Hero(
                         tag: 'event-${event.id}',
-                        child: Image.network(
-                          event.image ??
-                              'https://picsum.photos/400/200?random=${event.id}',
+                        child: Image.asset(
+                          'assets/images/uninorte.png',
                           height: 250,
                           width: double.infinity,
                           fit: BoxFit.cover,

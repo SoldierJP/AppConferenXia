@@ -137,45 +137,6 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                       ),
-<<<<<<< HEAD
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      const Icon(Icons.access_time, size: 16),
-                      const SizedBox(width: 8),
-                      Text(
-                        '${DateFormat('HH:mm').format(DateTime.parse(event.date))} - '
-                        '${DateFormat('HH:mm').format(DateTime.parse(event.date).add(Duration(hours: 2)))}',
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      const Icon(Icons.location_on, size: 16),
-                      const SizedBox(width: 8),
-                      Text(event.location),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        backgroundColor: primaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-=======
                     ),
                     const SizedBox(height: 8),
                     Row(
@@ -186,7 +147,6 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                           DateFormat(
                             'yyyy-MM-dd',
                           ).format(DateTime.parse(event.date)),
->>>>>>> 11fd644dbe0bd2a85e026fbd5ea89ff3170c2297
                         ),
                       ],
                     ),
