@@ -29,7 +29,8 @@ class DatabaseHelper {
             max_participants INTEGER NOT NULL,
             description TEXT,
             current_participants INTEGER DEFAULT 0,
-            is_finished BOOLEAN DEFAULT 0
+            is_finished BOOLEAN DEFAULT 0,
+            image TEXT
           )
         ''');
     await db.execute('''

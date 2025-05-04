@@ -139,7 +139,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       const Icon(Icons.access_time, size: 16),
                       const SizedBox(width: 8),
                       Text(
-                        DateFormat('HH:mm').format(DateTime.parse(event.date)),
+                        '${DateFormat('HH:mm').format(DateTime.parse(event.date))} - '
+                        '${DateFormat('HH:mm').format(DateTime.parse(event.date).add(Duration(hours: 2)))}',
                       ),
                     ],
                   ),
