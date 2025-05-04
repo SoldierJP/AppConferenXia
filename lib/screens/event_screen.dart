@@ -81,13 +81,20 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
             children: [
               Hero(
                 tag: 'event-${event.id}',
-                child: Image.network(
-                  event.image ??
-                      'https://picsum.photos/400/200?random=${event.id}',
-                  height: 250,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                ),
+                child:
+                    event.image != null && event.image!.isNotEmpty
+                        ? Image.asset(
+                          event.image!,
+                          height: 250,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        )
+                        : Image.asset(
+                          'assets/images/uninorte.png',
+                          height: 250,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),

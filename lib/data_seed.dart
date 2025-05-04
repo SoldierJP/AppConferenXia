@@ -10,7 +10,7 @@ Future<void> seedDatabase() async {
     ).format(DateTime.now().add(Duration(minutes: 5))),
     'max_participants': 200,
     'description': 'Annual technology conference.',
-    // 'image': 'assets/images/tech.png',
+    'image': 'assets/images/tech.png',
   });
 
   await DatabaseHelper.insertEvent({
@@ -21,7 +21,7 @@ Future<void> seedDatabase() async {
     ).format(DateTime.now().add(Duration(minutes: 5))),
     'max_participants': 500,
     'description': 'A festival for music lovers.',
-    // 'image': 'assets/images/music.png',
+    'image': 'assets/images/music.png',
   });
   await DatabaseHelper.insertEvent({
     'name': 'Sports Marathon 2025',
@@ -31,7 +31,7 @@ Future<void> seedDatabase() async {
     ).format(DateTime.now().add(Duration(minutes: 10))),
     'max_participants': 300,
     'description': 'Join the biggest sports marathon of the year.',
-    //
+    'image': 'assets/images/sport.png',
   });
 
   await DatabaseHelper.insertEvent({
@@ -42,7 +42,7 @@ Future<void> seedDatabase() async {
     ).format(DateTime.now().add(Duration(minutes: 15))),
     'max_participants': 150,
     'description': 'Explore inspiring artworks from around the world.',
-    // 'image': 'assets/images/art.png',
+    'image': 'assets/images/art.png',
   });
 
   await DatabaseHelper.insertEvent({
@@ -53,7 +53,7 @@ Future<void> seedDatabase() async {
     ).format(DateTime.now().add(Duration(minutes: 20))),
     'max_participants': 250,
     'description': 'Taste dishes from various cultures in one place.',
-    // 'image': 'assets/images/food.png',
+    'image': 'assets/images/food.png',
   });
 
   await DatabaseHelper.insertEventTrack({'name': 'Technology'});
@@ -70,4 +70,6 @@ Future<void> seedDatabase() async {
   await DatabaseHelper.associateEventToEventTrack(3, 3);
   await DatabaseHelper.associateEventToEventTrack(4, 4);
   await DatabaseHelper.associateEventToEventTrack(5, 5);
+  var test = await DatabaseHelper.getAllEvents();
+  print(test[1]);
 }

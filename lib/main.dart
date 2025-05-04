@@ -5,13 +5,13 @@ import 'package:primerproyectomovil/screens/splash_screen.dart';
 import 'package:provider/provider.dart';
 import 'data_seed.dart';
 import 'data_delete.dart';
-import '../database/datasources/local/local_data_source.dart';  
+import '../database/datasources/local/local_data_source.dart';
 import '../database/datasources/remote/remote_data_source.dart';
 import '../database/core/network_info.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  //deleteAllData();
+  deleteAllData();
   seedDatabase(); //descomentar para agregar datos, ir al data_Seed.dart para cambiarlos datos insertados.
   runApp(
     Provider<DataRepository>(
