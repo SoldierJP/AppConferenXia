@@ -4,10 +4,11 @@ class Event {
   final String location;
   final String date;
   final int maxParticipants;
-  final String? description;
+  final String ? description;
   int currentParticipants;
   final bool isFinished;
-  final String? image;
+  final String ? image;
+  final int ? eventTrackId;
 
   Event({
     this.id,
@@ -19,6 +20,7 @@ class Event {
     this.currentParticipants = 0,
     this.isFinished = false,
     this.image,
+    this.eventTrackId,
   });
 
   // Convert Event to Map (for SQLite)

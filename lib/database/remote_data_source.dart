@@ -1,7 +1,7 @@
-import '../models/event.dart';
-import '../models/event_track.dart';
-import '../models/event_review.dart';
-import '../database/i_remote_data_source.dart';
+import '../../../models/event.dart';
+import '../../../models/event_track.dart';
+import '../../../models/event_review.dart';
+import 'i_remote_data_source.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 

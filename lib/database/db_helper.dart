@@ -239,7 +239,9 @@ class DatabaseHelper {
     return rawData.map((map) => Event.fromMap(map)).toList();
   }
 
-  static double calculateAverageRating(List<Map<String, dynamic>> reviews) {
+  static double calculateAverageRating(List<Map<String, dynamic>> reviews) { 
+    // debería ser un servicio o 'use case', 
+    // estar por fuera de lógica de la base de datos
     if (reviews.isEmpty) return 0.0;
     double total = 0.0;
     for (var review in reviews) {
