@@ -8,5 +8,8 @@ abstract class IRemoteDataSource {
   // Future<List<EventTrack>> getEventTracks();
   Future<List<EventReview>> getEventReviews(int eventId);
   Future<void> addEventReview(EventReview eventReview);
+  
+  Future<List<EventTrack>> getEventTracks();
+  Future<void> uploadEvent(Event event);
   // Future<Event> updateEvent(Event event);
 }

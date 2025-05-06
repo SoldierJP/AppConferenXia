@@ -1,9 +1,8 @@
 import '../../../models/event.dart';
-import '../../../models/event_track.dart';
 import '../../../models/event_review.dart';
 import 'i_local_data_source.dart';
 import '../../../database/db_helper.dart';
-import '../../../models/subscribed_event.dart';
+
 
 class LocalDataSource implements ILocalDataSource{
   @override
@@ -26,4 +25,15 @@ class LocalDataSource implements ILocalDataSource{
     final reviews = await DatabaseHelper.getEventReviews(eventId);
     return reviews.map((review) => EventReview.fromMap(review)).toList();
   }
+  @override
+Future<void> saveAsPending(Event event) async {
+  await DatabaseHelper.insertPendingEvent(event.toMap());
+}
+
+@override
+Future<List<Event>> getPendingEvents() async {
+  final pending = await DatabaseHelper.getPendingEvents();
+  return pending.map((e) => Event.fromMap(e)).toList();
+}
+
 }

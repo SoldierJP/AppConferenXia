@@ -1,5 +1,4 @@
 import 'package:primerproyectomovil/models/event.dart';
-import 'package:primerproyectomovil/models/event_review.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' show join;
 
@@ -54,6 +53,7 @@ class DatabaseHelper {
             stars INTEGER NOT NULL,
             text TEXT NOT NULL,
             FOREIGN KEY (event_id) REFERENCES Event (id) ON DELETE CASCADE
+            event_track_id INTEGER,
           )
         ''');
     await db.execute('''
@@ -269,4 +269,14 @@ class DatabaseHelper {
     );
     return result.isNotEmpty;
   }
+  static Future<int> insertPendingEvent(Map<String, dynamic> event) async {
+  final db = await instance.db;
+  return await db.insert('PendingEvent', event, conflictAlgorithm: ConflictAlgorithm.replace);
+}
+
+static Future<List<Map<String, dynamic>>> getPendingEvents() async {
+  final db = await instance.db;
+  return await db.query('PendingEvent');
+}
+
 }

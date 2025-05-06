@@ -35,6 +35,7 @@ class Event {
       'current_participants': currentParticipants,
       'is_finished': isFinished ? 1 : 0,
       'image': image, // Include the new attribute
+      'event_track_id': eventTrackId,
     };
   }
 
@@ -50,6 +51,7 @@ class Event {
       currentParticipants: map['current_participants'],
       isFinished: map['is_finished'] == 1,
       image: map['image'], // Map the new attribute
+      eventTrackId: map['event_track_id'],
     );
   }
 }

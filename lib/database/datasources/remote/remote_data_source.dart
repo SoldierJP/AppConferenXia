@@ -15,6 +15,7 @@ class RemoteDataSource implements IRemoteDataSource{
   RemoteDataSource({http.Client? httpClient})
       : httpClient = httpClient ?? http.Client();
 
+
   @override
   Future<List<Event>> getEvents() async {
     List<Event> events = [];
@@ -60,4 +61,31 @@ class RemoteDataSource implements IRemoteDataSource{
     }
     return Future.value(reviews);
   }
+
+  @override
+Future<List<EventTrack>> getEventTracks() async {
+  final request = Uri.parse('$baseUrl/$contractKey/data/event_tracks')
+      .resolveUri(Uri(queryParameters: {'format': 'json'}));
+  final response = await httpClient.get(request);
+
+  if (response.statusCode == 200) {
+    final data = jsonDecode(response.body)['data'];
+    return List<EventTrack>.from(data.map((e) => EventTrack.fromMap(e)));
+  } else {
+    throw Exception('Failed to fetch event tracks');
+  }
+}
+
+@override
+Future<void> uploadEvent(Event event) async {
+  final request = Uri.parse('$baseUrl/$contractKey/data/events')
+      .resolveUri(Uri(queryParameters: {'format': 'json'}));
+  final response = await httpClient.post(request,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(event.toMap()));
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to upload event');
+  }
+}
 }
