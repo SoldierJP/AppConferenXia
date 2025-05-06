@@ -46,15 +46,15 @@ void main() {
 
     testWidgets('Displays reviews loaded from DatabaseHelper', (WidgetTester tester) async {
       final mockReviews = [
-       EventReview(eventId: 1, stars: 5, comment: 'Great event!'),
-      EventReview(eventId: 1, stars: 3, comment: 'Average event.'),
+       EventReview(eventId: 1, stars: 5, text: 'Great event!'),
+      EventReview(eventId: 1, stars: 3, text: 'Average event.'),
       ];
       getEventReviews = (int eventId) async {
     // Filter or ignore eventId if you like; here we return all mockReviews
     return mockReviews.map((review) => <String, dynamic>{
           'eventId': review.eventId,
           'stars': review.stars,
-          'text': review.comment,
+          'text': review.text,
         }).toList();
   };
 
