@@ -15,8 +15,8 @@ abstract class ILocalDataSource {
   // Future<void> insertEventTrack(EventTrack track);
   // Future<List<EventTrack>> getEventTracks(String eventId);
 
-  // Future<void> insertEventReview(EventReview review);
-  // Future<List<EventReview>> getEventReviews(String eventId);
+  Future<void> insertEventReview(EventReview review);
+  Future<List<EventReview>> getEventReviews(int eventId);
 
   //a implementar
   // Future<List<Event>> getEvents();

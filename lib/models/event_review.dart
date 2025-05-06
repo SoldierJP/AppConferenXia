@@ -2,13 +2,13 @@ class EventReview {
   final int? id;
   final int eventId;
   final int stars;
-  final String comment;
+  final String text;
 
   EventReview({
     this.id,
     required this.eventId,
     required this.stars,
-    required this.comment,
+    required this.text,
   });
   // Convert EventReview to Map (for SQLite)
   Map<String, dynamic> toMap() {
@@ -16,7 +16,7 @@ class EventReview {
       'id': id,
       'event_id': eventId,
       'stars': stars,
-      'comment': comment,
+      'text': text,
     };
   }
   // Create an EventReview from a Map 
@@ -25,7 +25,7 @@ class EventReview {
       id: map['id'],
       eventId: map['event_id'],
       stars: map['stars'],
-      comment: map['comment'],
+      text: map['text'],
     );
   }
 }

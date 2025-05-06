@@ -31,5 +31,33 @@ class RemoteDataSource implements IRemoteDataSource{
     }
     return Future.value(events);
   }
-  
+  @override
+  Future<void> addEventReview(EventReview eventReview) async {
+    final request = Uri.parse('$baseUrl/$contractKey/data/event_reviews')
+        .resolveUri(Uri(queryParameters: {'format': 'json'}
+    ));
+    final response = await httpClient.post(request,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(eventReview.toMap()));
+    if (response.statusCode != 200) {
+      print ('Error: ${response.statusCode}');
+      return Future.error('Error: ${response.statusCode}');
+    }
+  }
+  @override
+  Future<List<EventReview>> getEventReviews(int eventId) async {
+    List<EventReview> reviews = [];
+    final request = Uri.parse('$baseUrl/$contractKey/data/event_reviews')
+        .resolveUri(Uri(queryParameters: {'format': 'json'}
+    ));
+    final response = await httpClient.get(request);
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body)['data'];
+      reviews = List<EventReview>.from(data.map((review) => EventReview.fromMap(review)));
+    } else {
+      print ('Error: ${response.statusCode}');
+      return Future.error('Error: ${response.statusCode}');
+    }
+    return Future.value(reviews);
+  }
 }

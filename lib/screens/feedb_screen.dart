@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:primerproyectomovil/database/db_helper.dart';
 import 'package:primerproyectomovil/models/event.dart';
-
+import '../models/event_review.dart';
+import '../database/repositories/data_repository.dart'; 
+import 'package:provider/provider.dart';
 class EventFeedbackScreen extends StatefulWidget {
   final Event event;
 
@@ -46,11 +48,13 @@ class _EventFeedbackScreenState extends State<EventFeedbackScreen> {
   Future<void> _submitReview() async {
     if (selectedStars == 0 || _opinionController.text.isEmpty) return;
 
-    await DatabaseHelper.insertEventReview({
-      'event_id': widget.event.id!,
-      'stars': selectedStars,
-      'text': _opinionController.text,
-    });
+    EventReview newReview = EventReview(
+      eventId: widget.event.id!,
+      stars: selectedStars,
+      text: _opinionController.text,
+    );
+    final repo = Provider.of<DataRepository>(context, listen: false);
+    await repo.insertEventReview(newReview);
 
     _opinionController.clear();
     selectedStars = 0;

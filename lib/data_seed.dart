@@ -7,7 +7,7 @@ Future<void> seedDatabase() async {
     'location': 'New York',
     'date': DateFormat(
       'yyyy-MM-dd HH:mm:ss',
-    ).format(DateTime.now().add(Duration(minutes: 5))),
+    ).format(DateTime.now().add(Duration(minutes: 1))),
     'max_participants': 200,
     'description': 'Annual technology conference.',
     'image': 'assets/images/tech.png',

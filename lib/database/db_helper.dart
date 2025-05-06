@@ -82,7 +82,7 @@ class DatabaseHelper {
 
   static Future<int> insertEvent(Map<String, dynamic> event) async {
     final db = await instance.db;
-    return await db.insert('Event', event);
+    return await db.insert('Event', event, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   static Future<List<Map<String, dynamic>>> getEvents() async {
@@ -107,7 +107,7 @@ class DatabaseHelper {
 
   static Future<int> insertEventReview(Map<String, dynamic> review) async {
     final db = await instance.db;
-    return await db.insert('EventReview', review);
+    return await db.insert('EventReview', review, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   static Future<List<Map<String, dynamic>>> getEventReviews(int eventId) async {
