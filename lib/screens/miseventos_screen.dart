@@ -13,6 +13,7 @@ class MisEventosScreen extends StatefulWidget {
 
 class MisEventosScreenState extends State<MisEventosScreen> {
   int selectedIndex = 1;
+  String searchQuery = '';
 
   @override
   void initState() {
@@ -24,6 +25,14 @@ class MisEventosScreenState extends State<MisEventosScreen> {
     setState(() {
       selectedIndex = index;
     });
+  }
+
+  Future<List<Event>> loadSubscribedEventsFiltered() async {
+    final all = await DatabaseHelper.getSubscribedEvents();
+    if (searchQuery.isEmpty) return all;
+    return all
+        .where((e) => e.name.toLowerCase().contains(searchQuery.toLowerCase()))
+        .toList();
   }
 
   late Future<List<Event>> _futureEvents;
@@ -40,7 +49,15 @@ class MisEventosScreenState extends State<MisEventosScreen> {
         ),
         child: Column(
           children: [
-            custom.SearchBar(hintText: 'Buscar eventos', onChanged: (value) {}),
+            custom.SearchBar(
+              hintText: 'Buscar eventos',
+              onSubmitted: (value) {
+                setState(() {
+                  searchQuery = value;
+                  _futureEvents = loadSubscribedEventsFiltered();
+                });
+              },
+            ),
             Expanded(
               child: FutureBuilder<List<Event>>(
                 future: _futureEvents,
@@ -55,7 +72,7 @@ class MisEventosScreenState extends State<MisEventosScreen> {
                       events: events,
                       onRefresh: () {
                         setState(() {
-                          _futureEvents = loadSubscribedEvents();
+                          _futureEvents = loadSubscribedEventsFiltered();
                         });
                       },
                     );
