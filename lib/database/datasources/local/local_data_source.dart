@@ -8,7 +8,13 @@ import '../../../models/subscribed_event.dart';
 class LocalDataSource implements ILocalDataSource{
   @override
   Future<void> insertEvent(Event event) async {
-    await DatabaseHelper.insertEvent(event.toMap());
+    final map = event.toMap();
+    print('insertEvent() → map: $map'); 
+    try {
+      await DatabaseHelper.insertEvent(event.toMap());
+    } catch (e) {
+      print('Error inserting event: $e');
+    }
   }
   @override
   Future<List<Event>> getEvents() async { // cambiar a getEvents por trackId
