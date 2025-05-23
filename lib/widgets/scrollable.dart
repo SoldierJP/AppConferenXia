@@ -55,12 +55,20 @@ class ScrollableEventList extends StatelessWidget {
                       ),
                       child: Hero(
                         tag: 'event-${event.id}',
-                        child: Text('debuggear')
-                        //   event.image!,
-                        //   height: 250,
-                        //   width: double.infinity,
-                        //   fit: BoxFit.cover,
-                        // ),
+                        child:
+                            event.image != null && event.image!.isNotEmpty
+                                ? Image.asset(
+                                  event.image!,
+                                  height: 250,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                )
+                                : Image.asset(
+                                  'assets/images/uninorte.png',
+                                  height: 250,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                ),
                       ),
                     ),
                     Padding(

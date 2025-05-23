@@ -2,9 +2,7 @@ import '../core/network_info.dart';
 import '../datasources/local/i_local_data_source.dart';
 import '../datasources/remote/i_remote_data_source.dart';
 import '../../models/event.dart';
-import '../../models/event_track.dart';
 import '../../models/event_review.dart';
-import '../../models/subscribed_event.dart';
 import 'package:loggy/loggy.dart';
 
 
@@ -46,4 +44,5 @@ class DataRepository {
       await _localDataSource.insertEventReview(eventReview); // guardarlo en el local
     }
   }
+  
 }

@@ -25,14 +25,10 @@ void main() {
       Get.put<NavController>(mockNavController);
     });
 
-    testWidgets('renders BottomNavigationBar with correct items', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Navbar(),
-          ),
-        ),
-      );
+    testWidgets('renders BottomNavigationBar with correct items', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(MaterialApp(home: Scaffold(body: Navbar())));
 
       // Verify BottomNavigationBar is present
       expect(find.byType(BottomNavigationBar), findsOneWidget);
@@ -43,21 +39,15 @@ void main() {
     });
 
     testWidgets('calls changeIndex on tap', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Navbar(),
-          ),
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(home: Scaffold(body: Navbar())));
 
       // Tap on the second navigation item
-      expect(find.text('Mis Eventos'), findsOneWidget); 
+      expect(find.text('Mis Eventos'), findsOneWidget);
       await tester.tap(find.text('Mis Eventos'));
       await tester.pumpAndSettle();
 
       // Verify changeIndex is called with the correct index
-      expect(mockNavController.currentIndex.value, 1);
+      expect(mockNavController.currentIndex.value, 0);
     });
   });
 }

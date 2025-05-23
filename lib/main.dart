@@ -12,8 +12,8 @@ import '../database/core/network_info.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   // deleteDatabaseFile();
-   //deleteAllData();
-  seedDatabase();//descomentar para agregar datos, ir al data_Seed.dart para cambiarlos datos insertados.
+  deleteAllData();
+  seedDatabase(); //descomentar para agregar datos, ir al data_Seed.dart para cambiarlos datos insertados.
   runApp(
     Provider<DataRepository>(
       create: (_) {

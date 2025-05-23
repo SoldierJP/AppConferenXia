@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class SearchBar extends StatelessWidget {
   final String hintText;
   final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onSubmitted;
 
   const SearchBar({
     super.key,
     this.hintText = 'Buscar eventos...',
     this.onChanged,
+    this.onSubmitted,
   });
 
   @override
@@ -16,6 +18,7 @@ class SearchBar extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: TextField(
         onChanged: onChanged,
+        onSubmitted: onSubmitted,
         decoration: InputDecoration(
           hintText: hintText,
           prefixIcon: const Icon(Icons.search),

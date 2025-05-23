@@ -6,6 +6,7 @@ import 'package:primerproyectomovil/database/db_helper.dart';
 import 'package:primerproyectomovil/models/event.dart';
 import 'package:primerproyectomovil/widgets/EventTrackerBar.dart';
 import '../database/repositories/data_repository.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -16,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int selectedIndex = 0;
   int? selectedTrackId;
+  String searchQuery = '';
 
   void onItemTapped(int index) {
     setState(() {
@@ -27,6 +29,15 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       selectedTrackId = index;
     });
+  }
+
+  Future<List<Event>> loadFilteredEvents() async {
+    final all =
+        await Provider.of<DataRepository>(context, listen: false).fetchEvents();
+    if (searchQuery.isEmpty) return all;
+    return all
+        .where((e) => e.name.toLowerCase().contains(searchQuery.toLowerCase()))
+        .toList();
   }
 
   @override
@@ -54,13 +65,18 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               custom.SearchBar(
                 hintText: 'Buscar eventos',
-                onChanged: (value) {},
+                onSubmitted: (value) {
+                  // 👈 Cuando se presiona Enter
+                  setState(() {
+                    searchQuery = value;
+                  });
+                },
               ),
               const SizedBox(height: 8),
               EventTrackBar(onTrackTapped: onTrackTapped),
               const SizedBox(height: 8),
               FutureBuilder<List<Event>>(
-                future: repo.fetchEvents(),
+                future: loadFilteredEvents(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());

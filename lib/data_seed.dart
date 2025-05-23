@@ -70,6 +70,4 @@ Future<void> seedDatabase() async {
   await DatabaseHelper.associateEventToEventTrack(3, 3);
   await DatabaseHelper.associateEventToEventTrack(4, 4);
   await DatabaseHelper.associateEventToEventTrack(5, 5);
-  var test = await DatabaseHelper.getAllEvents();
-  print(test[1]);
 }

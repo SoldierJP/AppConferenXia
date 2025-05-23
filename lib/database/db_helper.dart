@@ -1,5 +1,4 @@
 import 'package:primerproyectomovil/models/event.dart';
-import 'package:primerproyectomovil/models/event_review.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' show join;
 
@@ -54,6 +53,7 @@ class DatabaseHelper {
             stars INTEGER NOT NULL,
             text TEXT NOT NULL,
             FOREIGN KEY (event_id) REFERENCES Event (id) ON DELETE CASCADE
+            event_track_id INTEGER,
           )
         ''');
     await db.execute('''
@@ -82,7 +82,11 @@ class DatabaseHelper {
 
   static Future<int> insertEvent(Map<String, dynamic> event) async {
     final db = await instance.db;
-    return await db.insert('Event', event, conflictAlgorithm: ConflictAlgorithm.replace);
+    return await db.insert(
+      'Event',
+      event,
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   static Future<List<Map<String, dynamic>>> getEvents() async {
@@ -107,7 +111,11 @@ class DatabaseHelper {
 
   static Future<int> insertEventReview(Map<String, dynamic> review) async {
     final db = await instance.db;
-    return await db.insert('EventReview', review, conflictAlgorithm: ConflictAlgorithm.replace);
+    return await db.insert(
+      'EventReview',
+      review,
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   static Future<List<Map<String, dynamic>>> getEventReviews(int eventId) async {
@@ -240,8 +248,8 @@ class DatabaseHelper {
     return rawData.map((map) => Event.fromMap(map)).toList();
   }
 
-  static double calculateAverageRating(List<Map<String, dynamic>> reviews) { 
-    // debería ser un servicio o 'use case', 
+  static double calculateAverageRating(List<Map<String, dynamic>> reviews) {
+    // debería ser un servicio o 'use case',
     // estar por fuera de lógica de la base de datos
     if (reviews.isEmpty) return 0.0;
     double total = 0.0;
@@ -268,5 +276,19 @@ class DatabaseHelper {
       whereArgs: [eventId],
     );
     return result.isNotEmpty;
+  }
+
+  static Future<int> insertPendingEvent(Map<String, dynamic> event) async {
+    final db = await instance.db;
+    return await db.insert(
+      'PendingEvent',
+      event,
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  static Future<List<Map<String, dynamic>>> getPendingEvents() async {
+    final db = await instance.db;
+    return await db.query('PendingEvent');
   }
 }
