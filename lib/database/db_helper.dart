@@ -43,7 +43,9 @@ class DatabaseHelper {
             description TEXT,
             current_participants INTEGER DEFAULT 0,
             is_finished BOOLEAN DEFAULT 0,
-            image TEXT
+            image TEXT, 
+            event_track_id INTEGER,
+            FOREIGN KEY (event_track_id) REFERENCES EventTrack (id) ON DELETE SET NULL
           )
         ''');
     await db.execute('''
@@ -52,8 +54,8 @@ class DatabaseHelper {
             event_id INTEGER NOT NULL,
             stars INTEGER NOT NULL,
             text TEXT NOT NULL,
-            FOREIGN KEY (event_id) REFERENCES Event (id) ON DELETE CASCADE
             event_track_id INTEGER,
+            FOREIGN KEY (event_id) REFERENCES Event (id) ON DELETE CASCADE
           )
         ''');
     await db.execute('''
