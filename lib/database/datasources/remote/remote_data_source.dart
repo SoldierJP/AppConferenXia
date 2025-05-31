@@ -10,7 +10,7 @@ import 'package:flutter/foundation.dart';
 class RemoteDataSource implements IRemoteDataSource{
   final http.Client httpClient;
 
-  final String contractKey = 'wuf-bdad-4bb8-a532-6aaa5fddefa4';
+  final String contractKey = 'woooof-4bb8-a532-6aaa5fddefa4';
 
   final String baseUrl = 'https://unidb.openlab.uninorte.edu.co';
 
@@ -68,29 +68,42 @@ class RemoteDataSource implements IRemoteDataSource{
 }
   @override
   Future<void> addEventReview(EventReview eventReview) async {
-    final request = Uri.parse('$baseUrl/$contractKey/data/event_reviews')
+    final request = Uri.parse('$baseUrl/$contractKey/data/store')
         .resolveUri(Uri(queryParameters: {'format': 'json'}
     ));
     final response = await httpClient.post(request,
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(eventReview.toMap()));
+        body: jsonEncode({
+          'table_name': 'event_reviews',
+          'data': eventReview.toMap()}));
     if (response.statusCode != 200) {
       print ('Error: ${response.statusCode}');
-      return Future.error('Error: ${response.statusCode}');
+      print ('Body: ${response.body}');
+      return Future.error('Error: ${response.body}');
     }
   }
   @override
   Future<List<EventReview>> getEventReviews(int eventId) async {
+    print('Fetching reviews for event ID: $eventId');
     List<EventReview> reviews = [];
-    final request = Uri.parse('$baseUrl/$contractKey/data/event_reviews')
+    final request = Uri.parse('$baseUrl/$contractKey/data/event_reviews/all?format=json&event_id=$eventId')
         .resolveUri(Uri(queryParameters: {'format': 'json'}
     ));
     final response = await httpClient.get(request);
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['data'];
-      reviews = List<EventReview>.from(data.map((review) => EventReview.fromMap(review)));
+      final List<Map<String, dynamic>> onlyData = data
+    .map<Map<String, dynamic>>((dynamic item) {
+      // `item` is dynamic, but we know it has a Map under the 'data' key
+      final dataMap = item['data'] as Map<String, dynamic>;
+      return dataMap;
+    })
+    .toList();
+      print('Reviews data: $onlyData');
+      reviews = List<EventReview>.from(onlyData.map((review) => EventReview.fromMap(review)));
     } else {
       print ('Error: ${response.statusCode}');
+      print ('Body: ${response.body}');
       return Future.error('Error: ${response.statusCode}');
     }
     return Future.value(reviews);

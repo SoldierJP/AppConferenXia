@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 import '../core/network_info.dart';
 import '../datasources/local/i_local_data_source.dart';
 import '../datasources/remote/i_remote_data_source.dart';
@@ -31,7 +33,9 @@ class DataRepository {
     if(await _networkInfo.isConnected()) {
       logInfo('Inserting event review to remote data source');
       await _remoteDataSource.addEventReview(eventReview); // guardarlo en el remoto
+      print('Event review inserted to remote data source: ${eventReview.toMap()}');
       final eventReviews = await _remoteDataSource.getEventReviews(eventReview.eventId);
+      
       for (final eventReview in eventReviews) {
         await _localDataSource.insertEventReview(eventReview); // actualizar el cache local
       }
