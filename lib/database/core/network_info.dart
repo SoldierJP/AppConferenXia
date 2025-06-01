@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:loggy/loggy.dart';
 
@@ -13,9 +14,9 @@ class NetworkInfo with UiLoggy {
   }
 
   void openStream() {
-    _internetStatusSubscription = InternetConnection()
-        .onStatusChange
-        .listen(_internetStatusSubscriptionListener);
+    _internetStatusSubscription = InternetConnection().onStatusChange.listen(
+      _internetStatusSubscriptionListener,
+    );
   }
 
   void closeStream() {

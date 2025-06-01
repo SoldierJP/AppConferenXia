@@ -43,8 +43,8 @@ class DatabaseHelper {
             description TEXT,
             current_participants INTEGER DEFAULT 0,
             is_finished BOOLEAN DEFAULT 0,
-            image TEXT, 
             event_track_id INTEGER,
+            image TEXT, 
             FOREIGN KEY (event_track_id) REFERENCES EventTrack (id) ON DELETE SET NULL
           )
         ''');
@@ -61,7 +61,8 @@ class DatabaseHelper {
     await db.execute('''
           CREATE TABLE EventTrack (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL
+            name TEXT NOT NULL,
+            description TEXT
           )
         ''');
     await db.execute('''
@@ -146,7 +147,11 @@ class DatabaseHelper {
 
   static Future<int> insertEventTrack(Map<String, dynamic> track) async {
     final db = await instance.db;
-    return await db.insert('EventTrack', track);
+    return await db.insert(
+      'EventTrack',
+      track,
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   static Future<List<Map<String, dynamic>>> getEventTracks() async {

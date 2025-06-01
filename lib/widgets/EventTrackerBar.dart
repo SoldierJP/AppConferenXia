@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:primerproyectomovil/database/db_helper.dart';
+// import 'package:primerproyectomovil/database/db_helper.dart';
+import 'package:primerproyectomovil/models/event_track.dart';
+import 'package:primerproyectomovil/database/repositories/data_repository.dart';
+import 'package:provider/provider.dart';
 
 class EventTrackBar extends StatefulWidget {
   /// NEW: allow injecting any async loader
-  final Future<List<Map<String, dynamic>>> Function() loadTracks;
+  // final Future<List<Map<String, dynamic>>> Function() loadTracks;
   final void Function(int?) onTrackTapped;
 
   const EventTrackBar({
     super.key,
     required this.onTrackTapped,
-    this.loadTracks = DatabaseHelper.getEventTracks, 
+    // this.loadTracks = DatabaseHelper.getEventTracks,
   });
 
   @override
@@ -17,8 +20,7 @@ class EventTrackBar extends StatefulWidget {
 }
 
 class _EventTrackBarState extends State<EventTrackBar> {
-  List<Map<String, dynamic>> tracks = [];
-
+  List<EventTrack> tracks = [];
   @override
   void initState() {
     super.initState();
@@ -26,7 +28,9 @@ class _EventTrackBarState extends State<EventTrackBar> {
   }
 
   Future<void> _load() async {
-    final result = await widget.loadTracks();
+    final repository = Provider.of<DataRepository>(context, listen: false);
+    debugPrint('[DEBUG] Obteniendo tracks desde DataRepository...');
+    final result = await repository.fetchEventTracks();
     setState(() => tracks = result);
   }
 
@@ -43,7 +47,7 @@ class _EventTrackBarState extends State<EventTrackBar> {
           itemBuilder: (context, index) {
             final track = tracks[index];
             return ElevatedButton(
-              onPressed: () => widget.onTrackTapped(track['id']),
+              onPressed: () => widget.onTrackTapped(track.id),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF14213D),
                 foregroundColor: Colors.white,
@@ -56,7 +60,7 @@ class _EventTrackBarState extends State<EventTrackBar> {
                 ),
                 elevation: 0,
               ),
-              child: Text(track['name']),
+              child: Text(track.name),
             );
           },
         ),
