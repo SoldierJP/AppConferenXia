@@ -1,18 +1,19 @@
 import '../../../models/event.dart';
 import '../../../models/event_review.dart';
-
+import '../../../models/event_track.dart';
 
 abstract class ILocalDataSource {
   Future<void> insertEvent(Event event);
   Future<List<Event>> getEvents();
-  
 
   Future<void> insertEventReview(EventReview review);
   Future<List<EventReview>> getEventReviews(int eventId);
-  
+
   Future<void> saveAsPending(Event event);
   Future<List<Event>> getPendingEvents();
 
+  Future<void> insertEventTrack(EventTrack track);
+  Future<List<EventTrack>> getEventTracks();
   //a implementar
   // Future<List<Event>> getEvents();
   // Future<void> updateEvent(Event event);
