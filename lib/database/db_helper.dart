@@ -61,7 +61,8 @@ class DatabaseHelper {
     await db.execute('''
           CREATE TABLE EventTrack (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL
+            name TEXT NOT NULL,
+            image TEXT
           )
         ''');
     await db.execute('''
@@ -146,7 +147,9 @@ class DatabaseHelper {
 
   static Future<int> insertEventTrack(Map<String, dynamic> track) async {
     final db = await instance.db;
-    return await db.insert('EventTrack', track);
+    return await db.insert('EventTrack', track,
+    conflictAlgorithm: ConflictAlgorithm.replace
+    );
   }
 
   static Future<List<Map<String, dynamic>>> getEventTracks() async {

@@ -10,7 +10,7 @@ import 'package:flutter/foundation.dart';
 class RemoteDataSource implements IRemoteDataSource{
   final http.Client httpClient;
 
-  final String contractKey = 'estesjovani-4bb8-a532-6aaa5fddefa4';
+  final String contractKey = 'kdkja-4bb8-a532-6aaa5fddefa4';
 
   final String baseUrl = 'https://unidb.openlab.uninorte.edu.co';
 
@@ -70,7 +70,7 @@ class RemoteDataSource implements IRemoteDataSource{
     })
     .toList();
       print('Track data: $onlyData');
-      tracks = List<EventTrack>.from(onlyData.map((track) => EventReview.fromMap(track)));
+      tracks = List<EventTrack>.from(onlyData.map((track) => EventTrack.fromMap(track)));
     } else {
       print ('Error: ${response.statusCode}');
       print ('Body: ${response.body}');

@@ -25,6 +25,7 @@ class _EventTrackBarState extends State<EventTrackBar> {
   void initState() {
     super.initState();
     _loader = widget.dataRepository.fetchEventTracks;
+    debugPrint('EventTrackBar: _loader initialized');
     _load();
   }
   
