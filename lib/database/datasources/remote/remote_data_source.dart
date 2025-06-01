@@ -10,7 +10,7 @@ import 'package:flutter/foundation.dart';
 class RemoteDataSource implements IRemoteDataSource{
   final http.Client httpClient;
 
-  final String contractKey = 'woooof-4bb8-a532-6aaa5fddefa4';
+  final String contractKey = 'estesjovani-4bb8-a532-6aaa5fddefa4';
 
   final String baseUrl = 'https://unidb.openlab.uninorte.edu.co';
 
@@ -54,17 +54,29 @@ class RemoteDataSource implements IRemoteDataSource{
 }
   @override
   Future<List<EventTrack>> getEventTracks() async {
-    final request = Uri.parse('$baseUrl/$contractKey/data/event_tracks')
+    List<EventTrack> tracks = [];
+    final request = Uri.parse('$baseUrl/$contractKey/data/event_tracks/all')
         .resolveUri(Uri(queryParameters: {'format': 'json'}
     ));
     final response = await httpClient.get(request);
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['data'];
-      return List<EventTrack>.from(data.map((track) => EventTrack.fromMap(track)));
+      print('Event tracks data: $data');
+      final List<Map<String, dynamic>> onlyData = data
+    .map<Map<String, dynamic>>((dynamic item) {
+      // `item` is dynamic, but we know it has a Map under the 'data' key
+      final dataMap = item['data'] as Map<String, dynamic>;
+      return dataMap;
+    })
+    .toList();
+      print('Track data: $onlyData');
+      tracks = List<EventTrack>.from(onlyData.map((track) => EventReview.fromMap(track)));
     } else {
       print ('Error: ${response.statusCode}');
+      print ('Body: ${response.body}');
       return Future.error('Error: ${response.statusCode}');
     }
+    return Future.value(tracks);
 }
   @override
   Future<void> addEventReview(EventReview eventReview) async {

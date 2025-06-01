@@ -73,7 +73,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
               const SizedBox(height: 8),
-              EventTrackBar(onTrackTapped: onTrackTapped),
+              EventTrackBar(dataRepository: repo,
+                onTrackTapped: onTrackTapped),
               const SizedBox(height: 8),
               FutureBuilder<List<Event>>(
                 future: loadFilteredEvents(),

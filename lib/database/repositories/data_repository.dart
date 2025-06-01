@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:primerproyectomovil/models/event_track.dart';
 
 import '../core/network_info.dart';
 import '../datasources/local/i_local_data_source.dart';
@@ -46,6 +47,19 @@ class DataRepository {
     } else {
       logInfo('Inserting event review to local data source');
       await _localDataSource.insertEventReview(eventReview); // guardarlo en el local
+    }
+  }
+  Future<List<EventTrack>> fetchEventTracks() async {
+    if (await _networkInfo.isConnected()) { // Si hay una conexion a internet
+      logInfo('Fetching event tracks from remote data source');
+      final eventTracks = await _remoteDataSource.getEventTracks();
+      for (final eventTrack in eventTracks) {
+        await _localDataSource.insertEventTrack(eventTrack); // Guardar en la base de datos local
+      }
+      return eventTracks;
+    } else {
+      logInfo('Fetching event tracks from local data source');
+      return await _localDataSource.getEventTracks();
     }
   }
   

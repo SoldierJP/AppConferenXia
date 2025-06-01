@@ -2,6 +2,7 @@ import '../../../models/event.dart';
 import '../../../models/event_review.dart';
 import 'i_local_data_source.dart';
 import '../../../database/db_helper.dart';
+import '../../../models/event_track.dart';
 
 
 class LocalDataSource implements ILocalDataSource{
@@ -42,4 +43,14 @@ Future<List<Event>> getPendingEvents() async {
   return pending.map((e) => Event.fromMap(e)).toList();
 }
 
+@override
+Future<void> insertEventTrack(EventTrack eventTrack) async {
+  await DatabaseHelper.insertEventTrack(eventTrack.toMap());  
+}
+
+@override
+Future<List<EventTrack>> getEventTracks() async {
+  final tracks = await DatabaseHelper.getEventTracks();
+  return tracks.map((track) => EventTrack.fromMap(track)).toList();
+}
 }
