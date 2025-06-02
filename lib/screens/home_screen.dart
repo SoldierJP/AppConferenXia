@@ -34,10 +34,14 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<List<Event>> loadFilteredEvents() async {
     final all =
         await Provider.of<DataRepository>(context, listen: false).fetchEvents();
-    if (searchQuery.isEmpty) return all;
-    return all
-        .where((e) => e.name.toLowerCase().contains(searchQuery.toLowerCase()))
-        .toList();
+    return all.where((e) {
+      final matchesQuery =
+          searchQuery.isEmpty ||
+          e.name.toLowerCase().contains(searchQuery.toLowerCase());
+      final matchesTrack =
+          selectedTrackId == null || e.eventTrackId == selectedTrackId;
+      return matchesQuery && matchesTrack;
+    }).toList();
   }
 
   @override
@@ -73,8 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
               const SizedBox(height: 8),
-              EventTrackBar(dataRepository: repo,
-                onTrackTapped: onTrackTapped),
+              EventTrackBar(dataRepository: repo, onTrackTapped: onTrackTapped),
               const SizedBox(height: 8),
               FutureBuilder<List<Event>>(
                 future: loadFilteredEvents(),
