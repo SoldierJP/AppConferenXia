@@ -4,37 +4,50 @@ import 'package:primerproyectomovil/models/event_track.dart';
 import '../core/network_info.dart';
 import '../datasources/local/i_local_data_source.dart';
 import '../datasources/remote/i_remote_data_source.dart';
+import '../datasources/remote/i_remote_api_data_source.dart';
 import '../../models/event.dart';
 import '../../models/event_review.dart';
 import 'package:loggy/loggy.dart';
-
-
+import '../../utils/config.dart';
+import '../../utils/version_storage.dart';
 
 class DataRepository {
   final IRemoteDataSource _remoteDataSource;
   final ILocalDataSource _localDataSource;
   final NetworkInfo _networkInfo;
+  final IRemoteApiDataSource _remoteApiDataSource;
+  final VersionStorage _versionStorage;
 
-  DataRepository(this._remoteDataSource, this._localDataSource, this._networkInfo);
+  DataRepository(this._remoteDataSource, this._localDataSource, this._networkInfo, this._remoteApiDataSource, this._versionStorage);
   // Fetch events from remote data source
   Future<List<Event>> fetchEvents() async {
-    if (await _networkInfo.isConnected()) { // Si hay una conexion a internet
-      logInfo('Fetching events from remote data source');
+    final v = await _versionStorage.getLocalVersion();
+    debugPrint('Local API version: ${v.version}');
+    final remoteVersion = await _remoteApiDataSource.getApiVersion();
+    debugPrint('Remote API version: $remoteVersion');
+    if (await _networkInfo.isConnected() && remoteVersion > v.version) { // Si hay una conexion a internet
+      debugPrint('Fetching events from remote data source');
+      await _versionStorage.setLocalVersion(remoteVersion); // Actualizar la version local
       final events = await _remoteDataSource.getEvents();
       for (final event in events) {
         await _localDataSource.insertEvent(event); // Guardar en la base de datos local
       }
       return events;
     } else {
-      logInfo('Fetching events from local data source');
+      debugPrint('Fetching events from local data source');
       return await _localDataSource.getEvents();
     }
   }
   Future<void> insertEventReview(EventReview eventReview) async {
-    if(await _networkInfo.isConnected()) {
-      logInfo('Inserting event review to remote data source');
+    final v = await _versionStorage.getLocalVersion();
+    debugPrint('Local API version: ${v.version}');
+    final remoteVersion = await _remoteApiDataSource.getApiVersion();
+    debugPrint('Remote API version: $remoteVersion');
+    if(await _networkInfo.isConnected() && remoteVersion > v.version) { // Si hay una conexion a internet y la version remota es mayor
+      debugPrint('Inserting event review to remote data source');
+      await _versionStorage.setLocalVersion(remoteVersion); // Actualizar la version local
       await _remoteDataSource.addEventReview(eventReview); // guardarlo en el remoto
-      print('Event review inserted to remote data source: ${eventReview.toMap()}');
+      debugPrint('Event review inserted to remote data source: ${eventReview.toMap()}');
       final eventReviews = await _remoteDataSource.getEventReviews(eventReview.eventId);
       
       for (final eventReview in eventReviews) {
@@ -45,20 +58,31 @@ class DataRepository {
         await _remoteDataSource.addEventReview(eventReview); // guardar cacheados
       }
     } else {
-      logInfo('Inserting event review to local data source');
+      debugPrint('Inserting event review to local data source');
       await _localDataSource.insertEventReview(eventReview); // guardarlo en el local
     }
   }
   Future<List<EventTrack>> fetchEventTracks() async {
-    if (await _networkInfo.isConnected()) { // Si hay una conexion a internet
-      logInfo('Fetching event tracks from remote data source');
+    final v = await _versionStorage.getLocalVersion();
+    debugPrint('Local API version: ${v.version}');
+    final remoteVersion = await _remoteApiDataSource.getApiVersion();
+    debugPrint('Remote API version: $remoteVersion');
+    // if (remoteVersion > v.version) {
+    //   debugPrint('Updating local API version to $remoteVersion');
+    //   await _versionStorage.setLocalVersion(remoteVersion);
+    // } else {
+    //   debugPrint('Local API version is up to date: ${v.version}');
+    // }
+    if (await _networkInfo.isConnected() && remoteVersion > v.version ) { // Si hay una conexion a internet
+      debugPrint('Fetching event tracks from remote data source');
+      await _versionStorage.setLocalVersion(remoteVersion); // Actualizar la version local
       final eventTracks = await _remoteDataSource.getEventTracks();
       for (final eventTrack in eventTracks) {
         await _localDataSource.insertEventTrack(eventTrack); // Guardar en la base de datos local
       }
       return eventTracks;
     } else {
-      logInfo('Fetching event tracks from local data source');
+      debugPrint('Fetching event tracks from local data source');
       return await _localDataSource.getEventTracks();
     }
   }

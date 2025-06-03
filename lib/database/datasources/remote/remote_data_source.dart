@@ -5,14 +5,10 @@ import 'i_remote_data_source.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-
+import '../../../../utils/config.dart';
 
 class RemoteDataSource implements IRemoteDataSource{
   final http.Client httpClient;
-
-  final String contractKey = 'kdkja-4bb8-a532-6aaa5fddefa4';
-
-  final String baseUrl = 'https://unidb.openlab.uninorte.edu.co';
 
   RemoteDataSource({http.Client? httpClient})
       : httpClient = httpClient ?? http.Client();
