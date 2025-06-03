@@ -15,7 +15,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   //deleteDatabaseFile();
   // seedDatabase(); //descomentar para agregar datos, ir al data_Seed.dart para cambiarlos datos insertados.
-  // deleteAllData();
+  //deleteAllData();
   runApp(
     Provider<DataRepository>(
       create: (_) {

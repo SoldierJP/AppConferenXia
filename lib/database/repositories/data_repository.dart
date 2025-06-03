@@ -39,13 +39,8 @@ class DataRepository {
     }
   }
   Future<void> insertEventReview(EventReview eventReview) async {
-    final v = await _versionStorage.getLocalVersion();
-    debugPrint('Local API version: ${v.version}');
-    final remoteVersion = await _remoteApiDataSource.getApiVersion();
-    debugPrint('Remote API version: $remoteVersion');
-    if(await _networkInfo.isConnected() && remoteVersion > v.version) { // Si hay una conexion a internet y la version remota es mayor
+    if(await _networkInfo.isConnected()) { // Si hay una conexion a internet y la version remota es mayor
       debugPrint('Inserting event review to remote data source');
-      await _versionStorage.setLocalVersion(remoteVersion); // Actualizar la version local
       await _remoteDataSource.addEventReview(eventReview); // guardarlo en el remoto
       debugPrint('Event review inserted to remote data source: ${eventReview.toMap()}');
       final eventReviews = await _remoteDataSource.getEventReviews(eventReview.eventId);
